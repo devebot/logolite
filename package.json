@@ -1,6 +1,6 @@
 {
   "name": "logolite",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Lite Logging Adapter",
   "main": "index.js",
   "scripts": {
