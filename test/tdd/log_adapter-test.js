@@ -2,8 +2,6 @@
 
 var assert = require('chai').assert;
 var expect = require('chai').expect;
-var path = require('path');
-var util = require('util');
 var debugx = require('debug')('tdd:logolite:LogAdapter');
 var LogAdapter = require('../../lib/log_adapter');
 var LogConfig = require('../../lib/log_config');

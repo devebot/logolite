@@ -31,6 +31,14 @@ LogAdapter.connectTo(bunyan.createLogger({
 }));
 */
 
+/*
+// or a log4js logger instance
+var log4js = require('log4js');
+var log4jsLogger = log4js.getLogger();
+log4jsLogger.level = 'debug';
+LogAdapter.connectTo(log4jsLogger);
+*/
+
 // create a logger
 var logger = LogAdapter.getLogger();
 ```

@@ -4,24 +4,11 @@ var assert = require('chai').assert;
 var expect = require('chai').expect;
 var debugx = require('debug')('tdd:logolite:LogTracer');
 var freshy = require('freshy');
-
 var LogTracer = freshy.freshy('../../lib/log_tracer');
 var LogConfig = require('../../lib/log_config');
 
 describe('logolite.LogTracer:', function() {
 	this.timeout(1000 * 60 * 60);
-
-	describe('libraryInfo:', function() {
-		it('should return library information when get libraryInfo', function() {
-			var libinfo = LogConfig.libraryInfo;
-			assert.equal(libinfo.lib_name, 'logolite');
-			assert.property(libinfo, 'lib_version');
-			assert.property(libinfo, 'os_name');
-			assert.property(libinfo, 'os_version');
-			assert.property(libinfo, 'os_arch');
-			debugx.enabled && debugx('libraryInfo: %s', JSON.stringify(LogConfig.libraryInfo));
-		})
-	});
 
 	describe('branch() method:', function() {
 		beforeEach(function() {
