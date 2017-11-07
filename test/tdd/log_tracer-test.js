@@ -6,26 +6,26 @@ var debugx = require('debug')('tdd:logolite:LogTracer');
 var freshy = require('freshy');
 
 var LogTracer = freshy.freshy('../../lib/log_tracer');
-var LogHelper = require('../../lib/log_helper');
+var LogConfig = require('../../lib/log_config');
 
 describe('logolite.LogTracer:', function() {
 	this.timeout(1000 * 60 * 60);
 
 	describe('libraryInfo:', function() {
 		it('should return library information when get libraryInfo', function() {
-			var libinfo = LogHelper.libraryInfo;
+			var libinfo = LogConfig.libraryInfo;
 			assert.equal(libinfo.lib_name, 'logolite');
 			assert.property(libinfo, 'lib_version');
 			assert.property(libinfo, 'os_name');
 			assert.property(libinfo, 'os_version');
 			assert.property(libinfo, 'os_arch');
-			debugx.enabled && debugx('libraryInfo: %s', JSON.stringify(LogHelper.libraryInfo));
+			debugx.enabled && debugx('libraryInfo: %s', JSON.stringify(LogConfig.libraryInfo));
 		})
 	});
 
 	describe('branch() method:', function() {
 		beforeEach(function() {
-			LogHelper.reset();
+			LogConfig.reset();
 		});
 
 		afterEach(function() {
@@ -88,7 +88,7 @@ describe('logolite.LogTracer:', function() {
 
 	describe('copy() method:', function() {
 		beforeEach(function() {
-			LogHelper.reset();
+			LogConfig.reset();
 		});
 
 		it('should clone new separated logTracer object', function() {
@@ -141,7 +141,7 @@ describe('logolite.LogTracer:', function() {
 
 	describe('interceptors:', function() {
 		beforeEach(function() {
-			LogHelper.reset();
+			LogConfig.reset();
 		});
 
 		it('should pass log object to interceptors', function() {
