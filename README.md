@@ -11,15 +11,24 @@ var LogAdapter = require('logolite').LogAdapter;
 
 // connect to your logger instance
 var winston = require('winston');
-LogAdapter.connectTo(winston);
+LogAdapter.connectTo(new winston.Logger({
+	transports: [
+		new winston.transports.Console({
+			level: 'debug',
+			json: false,
+			timestamp: true,
+			colorize: true
+		})
+	]
+}));
 
-// create the logger
+// create a logger
 var logger = LogAdapter.getLogger();
 ```
 
 Create logging tracers and put message and loginfo into it:
 
-```
+```javascript
 var LogTracer = require('logolite').LogTracer;
 var LogHelper = require('logolite').LogHelper;
 
@@ -28,10 +37,10 @@ var appTracer = LogTracer.ROOT.branch({
 	value: LogHelper.getLogID()
 });
 
-// ... code here ...
+// ... your code here ...
 
 // .add() a map (key/value), .put() a single field (key, value)
-logger.log(appTracer
+logger.log('info', appTracer
 	.add({
 		message: 'app level logging message',
 		dataInt: 123,
@@ -43,7 +52,7 @@ logger.log(appTracer
 	.put('anotherField', 1024)
 	.stringify({reset: true}));
 
-// ... code here ...
+// ... your code here ...
 
 // create a child tracer object
 var appSubLevel = appTracer.branch({
@@ -51,15 +60,15 @@ var appSubLevel = appTracer.branch({
 	value: LogHelper.getLogID()
 });
 
-logger.log(appSubLevel.add({
+logger.log('debug', appSubLevel.add({
 		message: 'message 1'
 	}).stringify());
 
-logger.log(appSubLevel.add({
+logger.log('debug', appSubLevel.add({
 		message: 'message 2'
 	}).stringify());
 
-// ... code here ...
+// ... your code here ...
 ```
 
 ## Environment variables
@@ -67,8 +76,10 @@ logger.log(appSubLevel.add({
 * `LOGOLITE_INSTANCE_ID`: (UUID string) instance ID of runtime;
 * `LOGOLITE_INFO_MESSAGE`: (string) Value of `message` field in libraryInfo logging object (default: "Application Information");
 * `LOGOLITE_DEFAULT_SCOPE`: (string) default scope for `debug` module (DEBUG=`debug_scopes`);
-* `LOGOLITE_MAXLEVEL`: (string) the maximum level that will be displayed;
+* `LOGOLITE_ALWAYS_ENABLED`: (string) the list of levels that are always enabled (default: none, "all" for all);
 * `LOGOLITE_DEBUGLOG`: (true/false) forces using `debug` module to render logging message (default: false);
+* `LOGOLITE_AUTO_DETECT_FOR`: ("bunyan"|"winston") detects for default `bunyan` or `winston` logging engine (default: none);
+* LOGOLITE_INTERCEPTOR_ENABLED: (true/false) enable/disable interception mode (default: true);
 * `LOGOLITE_SAFE_STRINGIFY`: (true/false) run JSON.stringify() inside try...catch block (default true);
 * `LOGOLITE_BASE64_UUID`: (true/false) enable/disable base64 UUID format (default true);
 

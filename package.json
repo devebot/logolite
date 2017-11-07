@@ -15,8 +15,10 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
+    "bunyan": "^1.8.12",
     "chai": "^4.1.2",
     "freshy": "^1.0.3",
-    "mocha": "^4.0.1"
+    "mocha": "^4.0.1",
+    "winston": "^2.4.0"
   }
 }
