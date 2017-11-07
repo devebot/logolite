@@ -36,7 +36,7 @@ logger.log('info', appTracer
 	})
 	.put('singleField', 'put a single key/value')
 	.put('anotherField', 1024)
-	.stringify({reset: true}));
+	.toMessage({reset: true}));
 
 console.log(' ... your code here ... ');
 
@@ -48,10 +48,10 @@ var appSubLevel = appTracer.branch({
 
 logger.log('debug', appSubLevel.add({
 		message: 'message 1'
-	}).stringify());
+	}).toMessage());
 
 logger.log('debug', appSubLevel.add({
 		message: 'message 2'
-	}).stringify());
+	}).toMessage());
 
 console.log(' ... your code here ... ');

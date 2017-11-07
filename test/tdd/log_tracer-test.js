@@ -19,7 +19,7 @@ describe('logolite.LogTracer:', function() {
 			assert.property(libinfo, 'os_name');
 			assert.property(libinfo, 'os_version');
 			assert.property(libinfo, 'os_arch');
-			debugx.enabled && debugx('libraryInfoString: %s', LogHelper.libraryInfoString);
+			debugx.enabled && debugx('libraryInfo: %s', JSON.stringify(LogHelper.libraryInfo));
 		})
 	});
 
