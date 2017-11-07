@@ -1,0 +1,22 @@
+{
+  "name": "logolite",
+  "version": "0.1.0",
+  "description": "Simple Logging Adapter",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "devebot",
+  "license": "ISC",
+  "dependencies": {
+    "app-root-path": "^2.0.1",
+    "debug": "^3.1.0",
+    "slugid": "^1.1.0",
+    "uuid": "^3.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "freshy": "^1.0.3",
+    "mocha": "^4.0.1"
+  }
+}
