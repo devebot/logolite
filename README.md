@@ -9,7 +9,7 @@ Create a `logger` object:
 ```javascript
 var LogAdapter = require('logolite').LogAdapter;
 
-// connect to your logger instance
+// connect to a logger instance (winston)
 var winston = require('winston');
 LogAdapter.connectTo(new winston.Logger({
 	transports: [
@@ -22,25 +22,33 @@ LogAdapter.connectTo(new winston.Logger({
 	]
 }));
 
+/*
+// or a bunyan logger instance instead
+var bunyan = require('bunyan');
+LogAdapter.connectTo(bunyan.createLogger({
+	name: 'myApplication',
+	level: 'debug'
+}));
+*/
+
 // create a logger
 var logger = LogAdapter.getLogger();
 ```
 
-Create logging tracers and put message and loginfo into it:
+Create a LogTracer object and put message and loginfo into it:
 
 ```javascript
 var LogTracer = require('logolite').LogTracer;
-var LogHelper = require('logolite').LogHelper;
 
 var appTracer = LogTracer.ROOT.branch({
 	key: 'appId',
-	value: LogHelper.getLogID()
+	value: LogTracer.getLogID()
 });
 
 // ... your code here ...
 
 // .add() a map (key/value), .put() a single field (key, value)
-logger.log('info', appTracer
+logger.isEnabledFor('info') && logger.log('info', appTracer
 	.add({
 		message: 'app level logging message',
 		dataInt: 123,
@@ -55,18 +63,22 @@ logger.log('info', appTracer
 // ... your code here ...
 
 // create a child tracer object
-var appSubLevel = appTracer.branch({
-	key: 'sublevel',
-	value: LogHelper.getLogID()
+var subLevel = appTracer.branch({
+	key: 'subLevel',
+	value: LogTracer.getLogID()
 });
 
-logger.log('debug', appSubLevel.add({
+logger.isEnabledFor('debug') && logger.log('debug', subLevel
+	.add({
 		message: 'message 1'
-	}).toMessage());
+	})
+	.toMessage());
 
-logger.log('debug', appSubLevel.add({
+logger.isEnabledFor('debug') && logger.log('debug', subLevel
+	.add({
 		message: 'message 2'
-	}).toMessage());
+	})
+	.toMessage());
 
 // ... your code here ...
 ```
@@ -83,4 +95,3 @@ logger.log('debug', appSubLevel.add({
 * `LOGOLITE_STRINGIFY_DISABLED`: (true/false) turns off stringify logging message when call toMessage() method (default: false);
 * `LOGOLITE_SAFE_STRINGIFY`: (true/false) run JSON.stringify() inside try...catch block (default true);
 * `LOGOLITE_BASE64_UUID`: (true/false) enable/disable base64 UUID format (default true);
-

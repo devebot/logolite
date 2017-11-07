@@ -1,7 +1,6 @@
 var logolite = require('../../index');
 var LogAdapter = logolite.LogAdapter;
 var LogTracer = logolite.LogTracer;
-var LogHelper = logolite.LogHelper;
 
 var winston = require('winston');
 LogAdapter.connectTo(new winston.Logger({
@@ -20,7 +19,7 @@ var logger = LogAdapter.getLogger();
 
 var appTracer = LogTracer.ROOT.branch({
 	key: 'appId',
-	value: LogHelper.getLogID()
+	value: LogTracer.getLogID()
 });
 
 console.log(' ... your code here ... ');
@@ -43,7 +42,7 @@ console.log(' ... your code here ... ');
 // create a child tracer object
 var appSubLevel = appTracer.branch({
 	key: 'sublevel',
-	value: LogHelper.getLogID()
+	value: LogTracer.getLogID()
 });
 
 logger.log('debug', appSubLevel.add({

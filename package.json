@@ -8,6 +8,11 @@
   },
   "author": "devebot",
   "license": "ISC",
+  "keywords": [
+    "logging",
+    "adapter",
+    "devebot"
+  ],
   "dependencies": {
     "app-root-path": "^2.0.1",
     "debug": "^3.1.0",
