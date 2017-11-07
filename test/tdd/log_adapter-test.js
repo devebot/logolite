@@ -5,8 +5,8 @@ var expect = require('chai').expect;
 var path = require('path');
 var util = require('util');
 var debugx = require('debug')('tdd:logolite:LogAdapter');
-var misc = require('../../lib/util');
 var LogAdapter = require('../../lib/log_adapter');
+var LogHelper = require('../../lib/log_helper');
 var MockLogger = require('../lab/mock_logger');
 
 describe('logolite.LogAdapter:', function() {
@@ -28,7 +28,7 @@ describe('logolite.LogAdapter:', function() {
 		logger.log('debug', {'msg': 'This is debug level'});
 
 		logger.isEnabledFor('info') && logger.log('info', {
-			'instanceId': misc.DEFAULT_INSTANCE_ID, 
+			'instanceId': LogHelper.DEFAULT_INSTANCE_ID, 
 			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
 			'field1': 'Value 1',
 			'field2': 'Value 2'
@@ -46,7 +46,7 @@ describe('logolite.LogAdapter:', function() {
 
 		assert.equal(mock.messages.length, 4);
 		assert.include(mock.messages[1][1], {
-			'instanceId': misc.DEFAULT_INSTANCE_ID,
+			'instanceId': LogHelper.DEFAULT_INSTANCE_ID,
 			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
 			'field1': 'Value 1',
 			'field2': 'Value 2'
