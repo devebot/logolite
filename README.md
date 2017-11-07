@@ -2,6 +2,66 @@
 
 > Lite Logging Adapter
 
+## How to use it?
+
+Create a `logger` object:
+
+```javascript
+var LogAdapter = require('logolite').LogAdapter;
+
+// connect to your logger instance
+var winston = require('winston');
+LogAdapter.connectTo(winston);
+
+// create the logger
+var logger = LogAdapter.getLogger();
+```
+
+Create logging tracers and put message and loginfo into it:
+
+```
+var LogTracer = require('logolite').LogTracer;
+var LogHelper = require('logolite').LogHelper;
+
+var appTracer = LogTracer.ROOT.branch({
+	key: 'appId',
+	value: LogHelper.getLogID()
+});
+
+// ... code here ...
+
+// .add() a map (key/value), .put() a single field (key, value)
+logger.log(appTracer
+	.add({
+		message: 'app level logging message',
+		dataInt: 123,
+		dataBoolean: true,
+		dataObject: { key1: 'value 1', key2: 'value 2' },
+		dataString: 'simple string'
+	})
+	.put('singleField', 'put a single key/value')
+	.put('anotherField', 1024)
+	.stringify({reset: true}));
+
+// ... code here ...
+
+// create a child tracer object
+var appSubLevel = appTracer.branch({
+	key: 'sublevel',
+	value: LogHelper.getLogID()
+});
+
+logger.log(appSubLevel.add({
+		message: 'message 1'
+	}).stringify());
+
+logger.log(appSubLevel.add({
+		message: 'message 2'
+	}).stringify());
+
+// ... code here ...
+```
+
 ## Environment variables
 
 * `LOGOLITE_INSTANCE_ID`: (UUID string) instance ID of runtime;
