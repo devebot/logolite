@@ -6,7 +6,7 @@ var debugx = require('debug')('tdd:logolite:LogTracer');
 var freshy = require('freshy');
 
 var LogTracer = freshy.freshy('../../lib/log_tracer');
-var LogHelper = freshy.freshy('../../lib/log_helper');
+var LogHelper = require('../../lib/log_helper');
 
 describe('logolite.LogTracer:', function() {
 	this.timeout(1000 * 60 * 60);
@@ -24,6 +24,13 @@ describe('logolite.LogTracer:', function() {
 	});
 
 	describe('branch() method:', function() {
+		beforeEach(function() {
+			LogHelper.reset();
+		});
+
+		afterEach(function() {
+		});
+
 		it('should create new child logTracer object', function() {
 			process.env.LOGOLITE_INSTANCE_ID = 'node1';
 
@@ -80,6 +87,10 @@ describe('logolite.LogTracer:', function() {
 	});
 
 	describe('copy() method:', function() {
+		beforeEach(function() {
+			LogHelper.reset();
+		});
+
 		it('should clone new separated logTracer object', function() {
 			process.env.LOGOLITE_INSTANCE_ID = 'node1';
 
@@ -129,6 +140,10 @@ describe('logolite.LogTracer:', function() {
 	});
 
 	describe('interceptors:', function() {
+		beforeEach(function() {
+			LogHelper.reset();
+		});
+
 		it('should pass log object to interceptors', function() {
 			process.env.LOGOLITE_INSTANCE_ID = 'node1';
 

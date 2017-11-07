@@ -89,9 +89,9 @@ logger.isEnabledFor('debug') && logger.log('debug', subLevel
 * `LOGOLITE_INFO_MESSAGE`: (string) Value of `message` field in libraryInfo logging object (default: "Application Information");
 * `LOGOLITE_DEFAULT_SCOPE`: (string) default scope for `debug` module (DEBUG=`debug_scopes`);
 * `LOGOLITE_ALWAYS_ENABLED`: (string) the list of levels that are always enabled (default: none, "all" for all);
-* `LOGOLITE_DEBUGLOG`: (true/false) forces using `debug` module to render logging message (default: false);
 * `LOGOLITE_AUTO_DETECT_FOR`: ("bunyan"|"winston") detects for default `bunyan` or `winston` logging engine (default: none);
+* `LOGOLITE_DEBUGLOG`: (true/false) forces using `debug` module to render logging message (default: false);
 * LOGOLITE_INTERCEPTOR_ENABLED: (true/false) enable/disable interception mode (default: true);
 * `LOGOLITE_STRINGIFY_DISABLED`: (true/false) turns off stringify logging message when call toMessage() method (default: false);
-* `LOGOLITE_SAFE_STRINGIFY`: (true/false) run JSON.stringify() inside try...catch block (default true);
+* `LOGOLITE_STRINGIFY_PROTECTED`: (true/false) run JSON.stringify() inside try...catch block (default: true);
 * `LOGOLITE_BASE64_UUID`: (true/false) enable/disable base64 UUID format (default true);
