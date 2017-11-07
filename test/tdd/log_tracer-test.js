@@ -6,18 +6,20 @@ var debugx = require('debug')('tdd:logolite:LogTracer');
 var freshy = require('freshy');
 
 var LogTracer = freshy.freshy('../../lib/log_tracer');
+var misc = freshy.freshy('../../lib/util');
 
 describe('logolite.LogTracer:', function() {
 	this.timeout(1000 * 60 * 60);
 
 	describe('libraryInfo:', function() {
 		it('should return library information when get libraryInfo', function() {
-			var libinfo = LogTracer.libraryInfo;
+			var libinfo = misc.libraryInfo;
 			assert.equal(libinfo.lib_name, 'logolite');
 			assert.property(libinfo, 'lib_version');
 			assert.property(libinfo, 'os_name');
 			assert.property(libinfo, 'os_version');
 			assert.property(libinfo, 'os_arch');
+			debugx.enabled && debugx('libraryInfoString: %s', misc.libraryInfoString);
 		})
 	});
 
