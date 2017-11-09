@@ -98,6 +98,7 @@ logger.isEnabledFor('debug') && logger.log('debug', subLevel
 * `LOGOLITE_DEFAULT_SCOPE`: (string) default scope for `debug` module (DEBUG=`debug_scopes`);
 * `LOGOLITE_ALWAYS_ENABLED`: (string) the list of levels that are always enabled (default: none, "all" for all);
 * `LOGOLITE_AUTO_DETECT_FOR`: ("bunyan"|"winston") detects for default `bunyan` or `winston` logging engine (default: none);
+* `LOGOLITE_DEBUGLOG_NAME`: (string) the name for debug logging level (default: `conlog`);
 * `LOGOLITE_DEBUGLOG`: (true/false) forces using `debug` module to render logging message (default: false);
 * LOGOLITE_INTERCEPTOR_ENABLED: (true/false) enable/disable interception mode (default: true);
 * `LOGOLITE_STRINGIFY_DISABLED`: (true/false) turns off stringify logging message when call toMessage() method (default: false);
