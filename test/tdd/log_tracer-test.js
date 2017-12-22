@@ -126,6 +126,77 @@ describe('logolite.LogTracer:', function() {
 		});
 	});
 
+	describe('formatting:', function() {
+		beforeEach(function() {
+			LogConfig.reset();
+		});
+
+		it('formatting is enabled if DEBUG is not empty', function() {
+			var env_DEBUG = process.env.DEBUG;
+			process.env.DEBUG = '*';
+
+			var LT1 = LogTracer.ROOT.reset();
+			var msg = LT1
+				.add({
+					name: 'Peter Pan',
+					age: 1024,
+					gender: true
+				})
+				.stringify({
+					template: 'The boy named {name} is {age} year olds',
+					reset: true
+				});
+
+			process.env.DEBUG = env_DEBUG;
+			assert.equal(msg, 'The boy named Peter Pan is 1024 year olds');
+		});
+
+		it('formatting is always disabled if LOGOLITE_FORMATTING_ENABLED=false', function() {
+			var env_DEBUG = process.env.DEBUG;
+
+			process.env.DEBUG = '*';
+			process.env.LOGOLITE_DEBUGLOG = 'true';
+			process.env.LOGOLITE_FORMATTING_ENABLED = 'false';
+
+			var LT1 = LogTracer.ROOT.reset();
+			var msg = LT1
+				.add({
+					name: 'Peter Pan',
+					age: 1024,
+					gender: true
+				})
+				.stringify({
+					template: 'The boy named {name} is {age} year olds',
+					reset: true
+				});
+
+			process.env.DEBUG = env_DEBUG;
+			delete process.env.LOGOLITE_DEBUGLOG;
+			delete process.env.LOGOLITE_FORMATTING_ENABLED;
+			var obj = JSON.parse(msg);
+			assert.deepEqual(obj, {"message":null,"instanceId":"node1","name":"Peter Pan","age":1024,"gender":true});
+		});
+
+		it('formatting is always enabled if LOGOLITE_FORMATTING_ENABLED=true', function() {
+			process.env.LOGOLITE_FORMATTING_ENABLED = 'true';
+
+			var LT1 = LogTracer.ROOT.reset();
+
+			var msg = LT1
+				.add({
+					name: 'Peter Pan',
+					age: 1024,
+					gender: true
+				})
+				.stringify({
+					template: 'The boy named {name} is {age} year olds',
+					reset: true
+				});
+
+			assert.equal(msg, 'The boy named Peter Pan is 1024 year olds');
+		});
+	});
+
 	describe('interceptors:', function() {
 		beforeEach(function() {
 			LogConfig.reset();
