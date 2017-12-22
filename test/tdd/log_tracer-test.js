@@ -3,8 +3,7 @@
 var assert = require('chai').assert;
 var expect = require('chai').expect;
 var debugx = require('debug')('tdd:logolite:LogTracer');
-var freshy = require('freshy');
-var LogTracer = freshy.freshy('../../lib/log_tracer');
+var LogTracer = require('../../lib/log_tracer');
 var LogConfig = require('../../lib/log_config');
 
 describe('logolite.LogTracer:', function() {
@@ -13,6 +12,7 @@ describe('logolite.LogTracer:', function() {
 	describe('branch() method:', function() {
 		beforeEach(function() {
 			LogConfig.reset();
+			LogTracer.reset();
 		});
 
 		afterEach(function() {
@@ -76,6 +76,7 @@ describe('logolite.LogTracer:', function() {
 	describe('copy() method:', function() {
 		beforeEach(function() {
 			LogConfig.reset();
+			LogTracer.reset();
 		});
 
 		it('should clone new separated logTracer object', function() {
@@ -126,9 +127,10 @@ describe('logolite.LogTracer:', function() {
 		});
 	});
 
-	describe('formatting:', function() {
+	describe('formatting log objects:', function() {
 		beforeEach(function() {
 			LogConfig.reset();
+			LogTracer.reset();
 		});
 
 		it('formatting is enabled if DEBUG is not empty', function() {
@@ -157,6 +159,7 @@ describe('logolite.LogTracer:', function() {
 			process.env.DEBUG = '*';
 			process.env.LOGOLITE_DEBUGLOG = 'true';
 			process.env.LOGOLITE_FORMATTING_ENABLED = 'false';
+			process.env.LOGOLITE_INSTANCE_ID = 'node1';
 
 			var LT1 = LogTracer.ROOT.reset();
 			var msg = LT1
@@ -173,6 +176,7 @@ describe('logolite.LogTracer:', function() {
 			process.env.DEBUG = env_DEBUG;
 			delete process.env.LOGOLITE_DEBUGLOG;
 			delete process.env.LOGOLITE_FORMATTING_ENABLED;
+			delete process.env.LOGOLITE_INSTANCE_ID;
 			var obj = JSON.parse(msg);
 			assert.deepEqual(obj, {"message":null,"instanceId":"node1","name":"Peter Pan","age":1024,"gender":true});
 		});
@@ -200,6 +204,7 @@ describe('logolite.LogTracer:', function() {
 	describe('interceptors:', function() {
 		beforeEach(function() {
 			LogConfig.reset();
+			LogTracer.reset();
 		});
 
 		it('should pass log object to interceptors', function() {
@@ -236,6 +241,91 @@ describe('logolite.LogTracer:', function() {
 			assert.isTrue(logdata1 === logdata3);
 			assert.isTrue(logdata1 !== logdata2);
 			assert.deepEqual(logdata1, logdata2);
+		});
+
+		afterEach(function() {
+			LogTracer.clearStringifyInterceptors();
 		})
+	});
+
+	describe('counting log objects:', function() {
+		var counter = {};
+		var countLogObject = LogTracer.countLogObject.bind(null, counter, [
+			{
+				matchingField: 'color',
+				filter: ['red', 'green', 'blue'],
+				countingField: 'rgbGroup'
+			},
+			{
+				matchingField: 'checkpoint',
+				filter: /COLOR.*03/g,
+				countingField: 'regexpGroup'
+			}
+		]);
+
+		before(function() {
+			LogTracer.addStringifyInterceptor(countLogObject);
+		});
+
+		beforeEach(function() {
+			LogConfig.reset();
+			LogTracer.reset();
+			Object.keys(counter).forEach(function(fieldName) {
+				delete counter[fieldName];
+			});
+		});
+
+		it('filters and counts by more than one patterns', function() {
+			var LT1 = LogTracer.ROOT.branch({
+				key: 'engineId', value: 'engine_123456'
+			});
+
+			var output = [];
+
+			output = [
+				LT1.add({
+					color: 'black',
+					checkpoint: 'COLOR_BLACK_01'
+				}).toMessage({
+					text: 'Men in {color} film'
+				}),
+				LT1.add({
+					color: 'red',
+					checkpoint: 'COLOR_RED_02'
+				}).toMessage({
+					text: '{color}boat fishsauce'
+				}),
+				LT1.add({
+					color: 'blue',
+					checkpoint: 'COLOR_BLUE_03'
+				}).toMessage({
+					text: '{color}sky computer'
+				}),
+				LT1.add({
+					color: 'yellow',
+					checkpoint: 'COLOR_YELLOW_03'
+				}).toMessage({
+					text: '{color}paper website'
+				})
+			];
+
+			debugx.enabled && debugx('output: %s', JSON.stringify(output));
+			assert.deepEqual(output, [
+				"Men in black film",
+				"redboat fishsauce",
+				"bluesky computer",
+				"yellowpaper website"
+			]);
+
+			debugx.enabled && debugx('counter: %s', JSON.stringify(counter));
+			assert.deepEqual(counter, {
+				"rgbGroup": 2,
+				"regexpGroup": 2
+			});
+		});
+
+		afterEach(function() {
+			LogTracer.clearStringifyInterceptors();
+		});
 	});
 });
