@@ -15,9 +15,6 @@ describe('logolite.LogTracer:', function() {
 			LogTracer.reset();
 		});
 
-		afterEach(function() {
-		});
-
 		it('should create new child logTracer object', function() {
 			process.env.LOGOLITE_INSTANCE_ID = 'node1';
 

@@ -55,8 +55,9 @@ var appTracer = LogTracer.ROOT.branch({
 
 // ... your code here ...
 
+// .has() is an alias of .isEnabledFor() method;
 // .add() a map (key/value), .put() a single field (key, value)
-logger.isEnabledFor('info') && logger.log('info', appTracer
+logger.has('info') && logger.log('info', appTracer
 	.add({
 		message: 'app level logging message',
 		dataInt: 123,
@@ -76,17 +77,23 @@ var subLevel = appTracer.branch({
 	value: LogTracer.getLogID()
 });
 
-logger.isEnabledFor('debug') && logger.log('debug', subLevel
+logger.has('debug') && logger.log('debug', subLevel
 	.add({
-		message: 'message 1'
+		name: 'Foo',
+		percent: 51
 	})
-	.toMessage());
+	.toMessage({
+		text: '{percent}% completed...'
+	}));
 
-logger.isEnabledFor('debug') && logger.log('debug', subLevel
+logger.has('debug') && logger.log('debug', subLevel
 	.add({
-		message: 'message 2'
+		name: 'Foo',
+		percent: 100
 	})
-	.toMessage());
+	.toMessage({
+		text: '{percent}% completed. The task "{name}" has done.'
+	}));
 
 // ... your code here ...
 ```
