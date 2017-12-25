@@ -3,8 +3,8 @@
 var assert = require('chai').assert;
 var expect = require('chai').expect;
 var debugx = require('debug')('tdd:logolite:LogTracer');
-var LogTracer = require('../../lib/log_tracer');
-var LogConfig = require('../../lib/log_config');
+var LogTracer = require('../../lib/tracer');
+var LogConfig = require('../../lib/config');
 
 describe('logolite.LogTracer:', function() {
 	this.timeout(1000 * 60 * 60);

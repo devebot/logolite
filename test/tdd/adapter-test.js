@@ -3,8 +3,8 @@
 var assert = require('chai').assert;
 var expect = require('chai').expect;
 var debugx = require('debug')('tdd:logolite:LogAdapter');
-var LogAdapter = require('../../lib/log_adapter');
-var LogConfig = require('../../lib/log_config');
+var LogAdapter = require('../../lib/adapter');
+var LogConfig = require('../../lib/config');
 var MockLogger = require('../lab/mock_logger');
 
 describe('logolite.LogAdapter:', function() {
