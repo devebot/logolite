@@ -251,12 +251,12 @@ describe('logolite.LogTracer:', function() {
 			{
 				matchingField: 'color',
 				filter: ['red', 'green', 'blue'],
-				countingField: 'rgbGroup'
+				storageField: 'rgbGroup'
 			},
 			{
 				matchingField: 'checkpoint',
 				filter: /COLOR.*03/g,
-				countingField: 'regexpGroup'
+				storageField: 'regexpGroup'
 			}
 		]);
 
