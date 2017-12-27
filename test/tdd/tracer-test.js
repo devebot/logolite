@@ -257,6 +257,14 @@ describe('logolite.LogTracer:', function() {
 				matchingField: 'checkpoint',
 				filter: /COLOR.*03/g,
 				storageField: 'regexpGroup'
+			},
+			{
+				anyTags: ['entertainment', 'technology'],
+				storageField: 'anyTagsCount'
+			},
+			{
+				allTags: ['advertise', 'technology'],
+				storageField: 'allTagsCount'
 			}
 		]);
 
@@ -284,12 +292,14 @@ describe('logolite.LogTracer:', function() {
 					color: 'black',
 					checkpoint: 'COLOR_BLACK_01'
 				}).toMessage({
+					tags: ['advertise', 'entertainment'],
 					text: 'Men in {color} film'
 				}),
 				LT1.add({
 					color: 'red',
 					checkpoint: 'COLOR_RED_02'
 				}).toMessage({
+					tags: ['food', 'technology'],
 					text: '{color}boat fishsauce'
 				}),
 				LT1.add({
@@ -302,6 +312,7 @@ describe('logolite.LogTracer:', function() {
 					color: 'yellow',
 					checkpoint: 'COLOR_YELLOW_03'
 				}).toMessage({
+					tags: ['advertise', 'IT', 'technology'],
 					text: '{color}paper website'
 				})
 			];
@@ -316,12 +327,14 @@ describe('logolite.LogTracer:', function() {
 
 			debugx.enabled && debugx('counter: %s', JSON.stringify(counter));
 			assert.deepEqual(counter, {
+				"allTagsCount": 1,
+				"anyTagsCount": 3,
 				"rgbGroup": 2,
 				"regexpGroup": 2
 			});
 		});
 
-		afterEach(function() {
+		after(function() {
 			LogTracer.clearStringifyInterceptors();
 		});
 	});
