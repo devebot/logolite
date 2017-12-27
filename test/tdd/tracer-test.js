@@ -247,24 +247,24 @@ describe('logolite.LogTracer:', function() {
 
 	describe('counting log objects:', function() {
 		var counter = {};
-		var countLogObject = LogTracer.countLogObject.bind(null, counter, [
+		var countLogObject = LogTracer.accumulationAppender.bind(null, counter, [
 			{
 				matchingField: 'color',
 				filter: ['red', 'green', 'blue'],
-				storageField: 'rgbGroup'
+				counterField: 'rgbGroup'
 			},
 			{
 				matchingField: 'checkpoint',
 				filter: /COLOR.*03/g,
-				storageField: 'regexpGroup'
+				counterField: 'regexpGroup'
 			},
 			{
 				anyTags: ['entertainment', 'technology'],
-				storageField: 'anyTagsCount'
+				counterField: 'anyTagsCount'
 			},
 			{
 				allTags: ['advertise', 'technology'],
-				storageField: 'allTagsCount'
+				counterField: 'allTagsCount'
 			}
 		]);
 
