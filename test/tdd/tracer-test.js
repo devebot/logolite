@@ -249,6 +249,10 @@ describe('logolite.LogTracer:', function() {
 		var counter = {};
 		var countLogObject = LogTracer.accumulationAppender.bind(null, counter, [
 			{
+				counterField: 'emptyCondCounter',
+				storageField: 'emptyCondStorage'
+			},
+			{
 				matchingField: 'color',
 				filter: ['red', 'green', 'blue'],
 				counterField: 'rgbGroup'
@@ -265,6 +269,12 @@ describe('logolite.LogTracer:', function() {
 			{
 				allTags: ['advertise', 'technology'],
 				counterField: 'allTagsCount'
+			},
+			{
+				matchingField: 'color',
+				filter: ['red', 'yellow', 'blue'],
+				anyTags: ['food', 'entertainment'],
+				counterField: 'filterAndTags'
 			}
 		]);
 
@@ -318,7 +328,7 @@ describe('logolite.LogTracer:', function() {
 			];
 
 			debugx.enabled && debugx('output: %s', JSON.stringify(output));
-			assert.deepEqual(output, [
+			assert.sameMembers(output, [
 				"Men in black film",
 				"redboat fishsauce",
 				"bluesky computer",
@@ -326,12 +336,16 @@ describe('logolite.LogTracer:', function() {
 			]);
 
 			debugx.enabled && debugx('counter: %s', JSON.stringify(counter));
-			assert.deepEqual(counter, {
+			assert.include(counter, {
 				"allTagsCount": 1,
 				"anyTagsCount": 3,
+				"filterAndTags": 1,
 				"rgbGroup": 2,
 				"regexpGroup": 2
 			});
+
+			assert.isUndefined(counter.emptyCondCounter);
+			assert.isUndefined(counter.emptyCondStorage);
 		});
 
 		after(function() {
