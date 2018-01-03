@@ -1,7 +1,7 @@
 {
   "name": "logolite",
   "version": "0.1.5",
-  "description": "Lite Logging Adapter",
+  "description": "Lite Virtual Logger and Tracer",
   "main": "index.js",
   "scripts": {
     "test": "node_modules/.bin/mocha test/tdd/*test.js"

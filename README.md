@@ -1,6 +1,6 @@
 # logolite
 
-> Lite Logging Adapter
+> Lite Virtual Logger and Tracer
 
 ## How to use it?
 
@@ -102,7 +102,7 @@ logger.has('debug') && logger.log('debug', subLevel
 
 * `LOGOLITE_INSTANCE_ID`: (UUID string) instance ID of runtime;
 * `LOGOLITE_INFO_MESSAGE`: (string) Value of `message` field in libraryInfo logging object (default: "Application Information");
-* `LOGOLITE_DEFAULT_SCOPE`: (string) default scope for `debug` module (DEBUG=`debug_scopes`);
+* `LOGOLITE_DEFAULT_SECTOR`: (string) default sector name for `debug` module (default: logolite-default, to display this sector: DEBUG=`logolite*,other*`);
 * `LOGOLITE_ALWAYS_ENABLED`: (string) the list of levels that are always enabled (default: none, "all" for all);
 * `LOGOLITE_AUTO_DETECT_FOR`: ("bunyan"|"winston") detects for default `bunyan` or `winston` logging engine (default: none);
 * `LOGOLITE_DEBUGLOG_NAME`: (string) the name for debug logging level (default: `conlog`);
