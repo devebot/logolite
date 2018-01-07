@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 var debugx = require('debug')('tdd:logolite:LogAdapter');
 var LogAdapter = require('../../lib/adapter');
 var LogConfig = require('../../lib/config');
-var MockLogger = require('../../lib/mock-logger');
+var MockLogger = require('../../lib/logmock');
 
 describe('logolite.LogAdapter:', function() {
 	this.timeout(1000 * 60 * 60);
