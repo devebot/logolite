@@ -20,7 +20,6 @@ describe('logolite.LogTracer:', function() {
 
 			var LT1 = LogTracer.ROOT;
 			assert.deepEqual(JSON.parse(LT1.toString()), {
-				"message": null,
 				"instanceId": "node1"
 			});
 
@@ -28,18 +27,15 @@ describe('logolite.LogTracer:', function() {
 			var msg1 = '' + LT2;
 			debugx.enabled && debugx('LT2-1: %s', msg1);
 			assert.deepEqual(JSON.parse(msg1), {
-				"message": null,
 				"instanceId": "node1",
 				"engineId": "engine_123456"
 			});
 
 			LT1.put("instanceId", "node2");
 			assert.deepEqual(JSON.parse(LT1.toString()), {
-				"message": null,
 				"instanceId": "node2"
 			});
 			assert.deepEqual(JSON.parse(LT1.reset().toString()), {
-				"message": null,
 				"instanceId": "node1"
 			});
 
@@ -81,7 +77,6 @@ describe('logolite.LogTracer:', function() {
 
 			var LT1 = LogTracer.ROOT;
 			assert.deepEqual(JSON.parse(LT1.toString()), {
-				"message": null,
 				"instanceId": "node1"
 			});
 
@@ -89,13 +84,11 @@ describe('logolite.LogTracer:', function() {
 			var msg1 = '' + LT2;
 			debugx.enabled && debugx('LT2-1: %s', msg1);
 			assert.deepEqual(JSON.parse(msg1), {
-				"message": null,
 				"instanceId": "node1"
 			});
 
 			LT1.put("instanceId", "node2");
 			assert.deepEqual(JSON.parse(LT1.toString()), {
-				"message": null,
 				"instanceId": "node2"
 			});
 
@@ -175,7 +168,12 @@ describe('logolite.LogTracer:', function() {
 			delete process.env.LOGOLITE_FORMATTING_ENABLED;
 			delete process.env.LOGOLITE_INSTANCE_ID;
 			var obj = JSON.parse(msg);
-			assert.deepEqual(obj, {"message":null,"instanceId":"node1","name":"Peter Pan","age":1024,"gender":true});
+			assert.deepEqual(obj, {
+				"instanceId":"node1",
+				"name":"Peter Pan",
+				"age":1024,
+				"gender":true
+			});
 		});
 
 		it('formatting is always enabled if LOGOLITE_FORMATTING_ENABLED=true', function() {
@@ -213,7 +211,6 @@ describe('logolite.LogTracer:', function() {
 			var I1 = function(logdata) {
 				LT1.reset();
 				assert.deepEqual(logdata, {
-					"message": null,
 					"instanceId": "node1"
 				});
 				logdata1 = logdata;
@@ -231,7 +228,6 @@ describe('logolite.LogTracer:', function() {
 
 			var LT1 = LogTracer.ROOT.reset();
 			assert.deepEqual(logdata2 = JSON.parse(LT1.toString()), {
-				"message": null,
 				"instanceId": "node1"
 			});
 
