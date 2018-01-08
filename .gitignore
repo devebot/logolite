@@ -2,6 +2,7 @@
 node_modules/
 *.log
 *.log.*
+*test.sh
 doc/
 log/*.log
 log/*.log.*
