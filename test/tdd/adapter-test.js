@@ -52,7 +52,65 @@ describe('logolite.LogAdapter:', function() {
 		debugx.enabled && debugx('Log messages: %s', JSON.stringify(mock.messages, null, 2));
 	});
 
+	it('Write log with new level that transformed by level mappings', function() {
+		var mock = (new MockLogger())._alter({
+			levels: {
+				level_e: 0,
+				level_w: 1,
+				level_i: 2,
+				level_d: 3,
+				level_t: 4,
+				level_s: 5
+			},
+			logLevel: 'level_i'
+		});
+		LogAdapter.connectTo(mock);
+		var logger = LogAdapter.getLogger({
+			mappings: {
+				'silly': 'level_s',
+				'trace': 'level_t',
+				'debug': 'level_d',
+				'info': 'level_i',
+				'warn': 'level_w',
+				'error': 'level_e'
+			}
+		});
+
+		logger.log('trace', {'msg': 'This is trace level'});
+
+		logger.log('debug', {'msg': 'This is debug level'});
+
+		logger.isEnabledFor('info') && logger.log('info', {
+			'instanceId': LogConfig.DEFAULT_INSTANCE_ID,
+			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
+			'field1': 'Value 1',
+			'field2': 'Value 2'
+		});
+
+		logger.isEnabledFor('info') && logger.log('info', {
+			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
+			'consumerId': 'consumer#1'
+		});
+
+		logger.isEnabledFor('info') && logger.log('info', {
+			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
+			'consumerId': 'consumer#2'
+		});
+
+		console.log(mock.messages);
+
+		assert.equal(mock.messages.length, 3);
+		assert.include(mock.messages[0][1], {
+			'instanceId': LogConfig.DEFAULT_INSTANCE_ID,
+			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
+			'field1': 'Value 1',
+			'field2': 'Value 2'
+		});
+		debugx.enabled && debugx('Log messages: %s', JSON.stringify(mock.messages, null, 2));
+	});
+
 	after(function() {
 		consoleLog && (process.env.LOGOLITE_DEBUGLOG = consoleLog);
 	});
+
 });
