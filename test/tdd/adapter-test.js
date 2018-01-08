@@ -55,16 +55,16 @@ describe('logolite.LogAdapter:', function() {
 	it('Write log with new level that transformed by level mappings', function() {
 		var mock = (new MockLogger())._alter({
 			levels: {
+				level_i: 2,
 				level_e: 0,
 				level_w: 1,
-				level_i: 2,
-				level_d: 3,
 				level_t: 4,
-				level_s: 5
+				level_s: 5,
+				level_d: 3
 			},
 			logLevel: 'level_i'
 		});
-		LogAdapter.connectTo(mock);
+		LogAdapter.connectTo(mock, 'level_i');
 		var logger = LogAdapter.getLogger({
 			mappings: {
 				'silly': 'level_s',
@@ -99,8 +99,8 @@ describe('logolite.LogAdapter:', function() {
 
 		console.log(mock.messages);
 
-		assert.equal(mock.messages.length, 3);
-		assert.include(mock.messages[0][1], {
+		assert.equal(mock.messages.length, 4);
+		assert.include(mock.messages[1][1], {
 			'instanceId': LogConfig.DEFAULT_INSTANCE_ID,
 			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
 			'field1': 'Value 1',

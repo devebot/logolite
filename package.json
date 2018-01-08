@@ -1,13 +1,13 @@
 {
   "name": "logolite",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Lite Virtual Logger and Tracer",
   "main": "index.js",
   "scripts": {
     "test": "node_modules/.bin/mocha test/tdd/*test.js"
   },
   "author": "devebot",
-  "license": "ISC",
+  "license": "MIT",
   "keywords": [
     "logging",
     "adapter",
