@@ -107,7 +107,7 @@ logger.has('debug') && logger.log('debug', subLevel
 * `LOGOLITE_AUTO_DETECT_FOR`: ("bunyan"|"winston") detects for default `bunyan` or `winston` logging engine (default: none);
 * `LOGOLITE_DEBUGLOG_NAME`: (string) the name for debug logging level (default: `conlog`);
 * `LOGOLITE_DEBUGLOG`: (true/false) forces using `debug` module to render logging message (default: false);
-* `LOGOLITE_FORMATTING_ENABLED`: (true/false) enable/disable format logging object by template string (default: true);
+* `LOGOLITE_TEXTFORMAT_ENABLED`: (true/false) enable/disable format logging object by template string (default: true);
 * LOGOLITE_INTERCEPTOR_ENABLED: (true/false) enable/disable interception mode (default: true);
 * `LOGOLITE_STRINGIFY_DISABLED`: (true/false) turns off stringify logging message when call toMessage() method (default: false);
 * `LOGOLITE_STRINGIFY_PROTECTED`: (true/false) run JSON.stringify() inside try...catch block (default: true);

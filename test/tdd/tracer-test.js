@@ -143,12 +143,12 @@ describe('logolite.LogTracer:', function() {
 			assert.equal(msg, 'The boy named Peter Pan is 1024 year olds');
 		});
 
-		it('formatting is always disabled if LOGOLITE_FORMATTING_ENABLED=false', function() {
+		it('formatting is always disabled if LOGOLITE_TEXTFORMAT_ENABLED=false', function() {
 			var env_DEBUG = process.env.DEBUG;
 
 			process.env.DEBUG = '*';
 			process.env.LOGOLITE_DEBUGLOG = 'true';
-			process.env.LOGOLITE_FORMATTING_ENABLED = 'false';
+			process.env.LOGOLITE_TEXTFORMAT_ENABLED = 'false';
 			process.env.LOGOLITE_INSTANCE_ID = 'node1';
 
 			var LT1 = LogTracer.ROOT.reset();
@@ -165,7 +165,7 @@ describe('logolite.LogTracer:', function() {
 
 			process.env.DEBUG = env_DEBUG;
 			delete process.env.LOGOLITE_DEBUGLOG;
-			delete process.env.LOGOLITE_FORMATTING_ENABLED;
+			delete process.env.LOGOLITE_TEXTFORMAT_ENABLED;
 			delete process.env.LOGOLITE_INSTANCE_ID;
 			var obj = JSON.parse(msg);
 			assert.deepEqual(obj, {
@@ -176,8 +176,8 @@ describe('logolite.LogTracer:', function() {
 			});
 		});
 
-		it('formatting is always enabled if LOGOLITE_FORMATTING_ENABLED=true', function() {
-			process.env.LOGOLITE_FORMATTING_ENABLED = 'true';
+		it('formatting is always enabled if LOGOLITE_TEXTFORMAT_ENABLED=true', function() {
+			process.env.LOGOLITE_TEXTFORMAT_ENABLED = 'true';
 
 			var LT1 = LogTracer.ROOT.reset();
 

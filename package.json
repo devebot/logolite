@@ -16,7 +16,6 @@
   "dependencies": {
     "app-root-path": "^2.0.1",
     "debug": "^3.1.0",
-    "slugid": "^1.1.0",
     "uuid": "^3.1.0"
   },
   "devDependencies": {

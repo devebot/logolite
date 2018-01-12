@@ -27,25 +27,25 @@ describe('logolite.LogAdapter:', function() {
 
 		logger.isEnabledFor('info') && logger.log('info', {
 			'instanceId': LogConfig.DEFAULT_INSTANCE_ID, 
-			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
+			'engineId': 'V4m0wz4xRWSva-nn5AjuTQ',
 			'field1': 'Value 1',
 			'field2': 'Value 2'
 		});
 
 		logger.isEnabledFor('info') && logger.log('info', {
-			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
+			'engineId': 'V4m0wz4xRWSva-nn5AjuTQ',
 			'consumerId': 'consumer#1'
 		});
 
 		logger.isEnabledFor('info') && logger.log('info', {
-			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
+			'engineId': 'V4m0wz4xRWSva-nn5AjuTQ',
 			'consumerId': 'consumer#2'
 		});
 
 		assert.equal(mock.messages.length, 4);
 		assert.include(mock.messages[1][1], {
 			'instanceId': LogConfig.DEFAULT_INSTANCE_ID,
-			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
+			'engineId': 'V4m0wz4xRWSva-nn5AjuTQ',
 			'field1': 'Value 1',
 			'field2': 'Value 2'
 		});
@@ -82,18 +82,18 @@ describe('logolite.LogAdapter:', function() {
 
 		logger.isEnabledFor('info') && logger.log('info', {
 			'instanceId': LogConfig.DEFAULT_INSTANCE_ID,
-			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
+			'engineId': 'V4m0wz4xRWSva-nn5AjuTQ',
 			'field1': 'Value 1',
 			'field2': 'Value 2'
 		});
 
 		logger.isEnabledFor('info') && logger.log('info', {
-			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
+			'engineId': 'V4m0wz4xRWSva-nn5AjuTQ',
 			'consumerId': 'consumer#1'
 		});
 
 		logger.isEnabledFor('info') && logger.log('info', {
-			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
+			'engineId': 'V4m0wz4xRWSva-nn5AjuTQ',
 			'consumerId': 'consumer#2'
 		});
 
@@ -102,7 +102,7 @@ describe('logolite.LogAdapter:', function() {
 		assert.equal(mock.messages.length, 4);
 		assert.include(mock.messages[1][1], {
 			'instanceId': LogConfig.DEFAULT_INSTANCE_ID,
-			'engineId': 'eef420ff-9eb7-474a-996a-f63b121100a8',
+			'engineId': 'V4m0wz4xRWSva-nn5AjuTQ',
 			'field1': 'Value 1',
 			'field2': 'Value 2'
 		});
