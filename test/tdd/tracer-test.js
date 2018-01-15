@@ -5,9 +5,81 @@ var expect = require('chai').expect;
 var debugx = require('debug')('tdd:logolite:LogTracer');
 var LogTracer = require('../../lib/tracer');
 var LogConfig = require('../../lib/config');
+var Envref = require('../../lib/envref');
 
 describe('logolite.LogTracer:', function() {
 	this.timeout(1000 * 60 * 60);
+
+	describe('static anchor fields:', function() {
+		var envref = new Envref();
+
+		beforeEach(function() {
+			LogConfig.reset();
+			LogTracer.reset();
+		});
+
+		it('key and value will be stored in _nodeType_ and _nodeId_ fields', function() {
+			envref.setup({
+				LOGOLITE_INSTANCE_ID: 'node1',
+				LOGOLITE_TRACKING_DEPTH: 0
+			});
+
+			var LT1 = LogTracer.ROOT;
+			assert.deepEqual(JSON.parse(LT1.toString()), {
+				"_nodeId_": "node1",
+				"_nodeType_": "instanceId"
+			});
+
+			var LT2 = LT1.branch({key: 'engineId', value: 'engine_123456'});
+			var msg1 = '' + LT2;
+			debugx.enabled && debugx('LT2-1: %s', msg1);
+			assert.deepEqual(JSON.parse(msg1), {
+				"_parentId_": "node1",
+				"_nodeId_": "engine_123456",
+				"_nodeType_": "engineId"
+			});
+
+			LT1.put("instanceId", "node2");
+			assert.deepEqual(JSON.parse(LT1.toString()), {
+				"_nodeId_": "node1",
+				"_nodeType_": "instanceId",
+				"instanceId": "node2"
+			});
+			assert.deepEqual(JSON.parse(LT1.reset().toString()), {
+				"_nodeId_": "node1",
+				"_nodeType_": "instanceId"
+			});
+
+			LT2.put('message', 'Message #2')
+				.put('integer', 100)
+				.put('float', 123.456);
+			var msg2 = '' + LT2;
+			debugx.enabled && debugx('LT2-2: %s', msg2);
+			assert.deepEqual(JSON.parse(msg2), {
+				"_parentId_": "node1",
+				"_nodeId_": "engine_123456",
+				"_nodeType_": "engineId",
+				"message": "Message #2",
+				"integer": 100,
+				"float": 123.456
+			});
+
+			LT2.reset()
+				.put('boolean', true)
+				.put('message', 'Message renew #2');
+			var msg3 = '' + LT2;
+			debugx.enabled && debugx('LT2-3: %s', msg3);
+			assert.deepEqual(JSON.parse(msg3), {
+				"_parentId_": "node1",
+				"_nodeId_": "engine_123456",
+				"_nodeType_": "engineId",
+				"boolean": true,
+				"message": "Message renew #2"
+			});
+
+			envref.reset();
+		});
+	});
 
 	describe('branch() method:', function() {
 		beforeEach(function() {
