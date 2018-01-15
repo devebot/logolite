@@ -21,23 +21,23 @@ describe('logolite.LogAdapter:', function() {
 		LogAdapter.connectTo(mock);
 		var logger = LogAdapter.getLogger();
 
-		logger.log('trace', {'msg': 'This is trace level'});
+		logger.has('trace') && logger.log('trace', {'msg': 'This is trace level'});
 
-		logger.log('debug', {'msg': 'This is debug level'});
+		logger.has('debug') && logger.log('debug', {'msg': 'This is debug level'});
 
-		logger.isEnabledFor('info') && logger.log('info', {
+		logger.has('info') && logger.log('info', {
 			'instanceId': LogConfig.DEFAULT_INSTANCE_ID, 
 			'engineId': 'V4m0wz4xRWSva-nn5AjuTQ',
 			'field1': 'Value 1',
 			'field2': 'Value 2'
 		});
 
-		logger.isEnabledFor('info') && logger.log('info', {
+		logger.has('info') && logger.log('info', {
 			'engineId': 'V4m0wz4xRWSva-nn5AjuTQ',
 			'consumerId': 'consumer#1'
 		});
 
-		logger.isEnabledFor('info') && logger.log('info', {
+		logger.has('info') && logger.log('info', {
 			'engineId': 'V4m0wz4xRWSva-nn5AjuTQ',
 			'consumerId': 'consumer#2'
 		});
@@ -80,19 +80,19 @@ describe('logolite.LogAdapter:', function() {
 
 		logger.log('debug', {'msg': 'This is debug level'});
 
-		logger.isEnabledFor('info') && logger.log('info', {
+		logger.has('info') && logger.log('info', {
 			'instanceId': LogConfig.DEFAULT_INSTANCE_ID,
 			'engineId': 'V4m0wz4xRWSva-nn5AjuTQ',
 			'field1': 'Value 1',
 			'field2': 'Value 2'
 		});
 
-		logger.isEnabledFor('info') && logger.log('info', {
+		logger.has('info') && logger.log('info', {
 			'engineId': 'V4m0wz4xRWSva-nn5AjuTQ',
 			'consumerId': 'consumer#1'
 		});
 
-		logger.isEnabledFor('info') && logger.log('info', {
+		logger.has('info') && logger.log('info', {
 			'engineId': 'V4m0wz4xRWSva-nn5AjuTQ',
 			'consumerId': 'consumer#2'
 		});
