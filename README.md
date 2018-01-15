@@ -67,7 +67,10 @@ logger.has('info') && logger.log('info', appTracer
 	})
 	.put('singleField', 'put a single key/value')
 	.put('anotherField', 1024)
-	.toMessage({reset: true}));
+	.toMessage({
+		tags: ['FOR_TRACKING_ONLY', 'END_OF_FUNCTION'],
+		text: 'Message - integer {dataInt}, str: {dataString}!'
+	}));
 
 // ... your code here ...
 

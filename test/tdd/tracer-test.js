@@ -9,9 +9,9 @@ var Envref = require('../../lib/envref');
 
 describe('logolite.LogTracer:', function() {
 	this.timeout(1000 * 60 * 60);
+	var envref = new Envref();
 
 	describe('static anchor fields:', function() {
-		var envref = new Envref();
 
 		beforeEach(function() {
 			LogConfig.reset();
@@ -21,7 +21,7 @@ describe('logolite.LogTracer:', function() {
 		it('key and value will be stored in _nodeType_ and _nodeId_ fields', function() {
 			envref.setup({
 				LOGOLITE_INSTANCE_ID: 'node1',
-				LOGOLITE_TRACKING_DEPTH: 0
+				LOGOLITE_TRACING_ID_PREDEFINED: 'true'
 			});
 
 			var LT1 = LogTracer.ROOT;
@@ -88,7 +88,9 @@ describe('logolite.LogTracer:', function() {
 		});
 
 		it('should create new child logTracer object', function() {
-			process.env.LOGOLITE_INSTANCE_ID = 'node1';
+			envref.setup({
+				LOGOLITE_INSTANCE_ID: 'node1'
+			});
 
 			var LT1 = LogTracer.ROOT;
 			assert.deepEqual(JSON.parse(LT1.toString()), {
@@ -135,6 +137,8 @@ describe('logolite.LogTracer:', function() {
 				"boolean": true,
 				"message": "Message renew #2"
 			});
+
+			envref.reset();
 		});
 	});
 
@@ -145,7 +149,9 @@ describe('logolite.LogTracer:', function() {
 		});
 
 		it('should clone new separated logTracer object', function() {
-			process.env.LOGOLITE_INSTANCE_ID = 'node1';
+			envref.setup({
+				LOGOLITE_INSTANCE_ID: 'node1'
+			});
 
 			var LT1 = LogTracer.ROOT;
 			assert.deepEqual(JSON.parse(LT1.toString()), {
@@ -186,6 +192,8 @@ describe('logolite.LogTracer:', function() {
 				"boolean": true,
 				"message": "Message renew #2"
 			});
+
+			envref.reset();
 		});
 	});
 
@@ -196,8 +204,9 @@ describe('logolite.LogTracer:', function() {
 		});
 
 		it('formatting is enabled if DEBUG is not empty', function() {
-			var env_DEBUG = process.env.DEBUG;
-			process.env.DEBUG = '*';
+			envref.setup({
+				DEBUG: '*'
+			});
 
 			var LT1 = LogTracer.ROOT.reset();
 			var msg = LT1
@@ -207,21 +216,20 @@ describe('logolite.LogTracer:', function() {
 					gender: true
 				})
 				.stringify({
-					template: 'The boy named {name} is {age} year olds',
-					reset: true
+					template: 'The boy named {name} is {age} year olds'
 				});
 
-			process.env.DEBUG = env_DEBUG;
 			assert.equal(msg, 'The boy named Peter Pan is 1024 year olds');
+			envref.reset();
 		});
 
 		it('formatting is always disabled if LOGOLITE_TEXTFORMAT_ENABLED=false', function() {
-			var env_DEBUG = process.env.DEBUG;
-
-			process.env.DEBUG = '*';
-			process.env.LOGOLITE_DEBUGLOG = 'true';
-			process.env.LOGOLITE_TEXTFORMAT_ENABLED = 'false';
-			process.env.LOGOLITE_INSTANCE_ID = 'node1';
+			envref.setup({
+				DEBUG: '*',
+				LOGOLITE_DEBUGLOG: 'true',
+				LOGOLITE_TEXTFORMAT_ENABLED: 'false',
+				LOGOLITE_INSTANCE_ID: 'node1'
+			});
 
 			var LT1 = LogTracer.ROOT.reset();
 			var msg = LT1
@@ -231,14 +239,9 @@ describe('logolite.LogTracer:', function() {
 					gender: true
 				})
 				.stringify({
-					template: 'The boy named {name} is {age} year olds',
-					reset: true
+					template: 'The boy named {name} is {age} year olds'
 				});
 
-			process.env.DEBUG = env_DEBUG;
-			delete process.env.LOGOLITE_DEBUGLOG;
-			delete process.env.LOGOLITE_TEXTFORMAT_ENABLED;
-			delete process.env.LOGOLITE_INSTANCE_ID;
 			var obj = JSON.parse(msg);
 			assert.deepEqual(obj, {
 				"instanceId":"node1",
@@ -246,10 +249,14 @@ describe('logolite.LogTracer:', function() {
 				"age":1024,
 				"gender":true
 			});
+
+			envref.reset();
 		});
 
 		it('formatting is always enabled if LOGOLITE_TEXTFORMAT_ENABLED=true', function() {
-			process.env.LOGOLITE_TEXTFORMAT_ENABLED = 'true';
+			envref.setup({
+				LOGOLITE_TEXTFORMAT_ENABLED: 'true'
+			});
 
 			var LT1 = LogTracer.ROOT.reset();
 
@@ -260,11 +267,12 @@ describe('logolite.LogTracer:', function() {
 					gender: true
 				})
 				.stringify({
-					template: 'The boy named {name} is {age} year olds',
-					reset: true
+					template: 'The boy named {name} is {age} year olds'
 				});
 
 			assert.equal(msg, 'The boy named Peter Pan is 1024 year olds');
+
+			envref.reset();
 		});
 	});
 
@@ -275,7 +283,9 @@ describe('logolite.LogTracer:', function() {
 		});
 
 		it('should pass log object to interceptors', function() {
-			process.env.LOGOLITE_INSTANCE_ID = 'node1';
+			envref.setup({
+				LOGOLITE_INSTANCE_ID: 'node1'
+			});
 
 			var logdata1, logdata2, logdata3;
 			var LT1 = LogTracer.ROOT.reset();
@@ -306,6 +316,8 @@ describe('logolite.LogTracer:', function() {
 			assert.isTrue(logdata1 === logdata3);
 			assert.isTrue(logdata1 !== logdata2);
 			assert.deepEqual(logdata1, logdata2);
+
+			envref.reset();
 		});
 
 		afterEach(function() {
