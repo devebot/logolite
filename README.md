@@ -108,14 +108,16 @@ logger.has('debug') && logger.log('debug', subLevel
 * `LOGOLITE_DEFAULT_SECTOR`: (string) default sector name for `debug` module (default: logolite-default, to display this sector: `DEBUG`=`logolite*,other*`);
 * `LOGOLITE_ALWAYS_ENABLED`: (string) the list of levels that are always enabled (default: none, "all" for all);
 * `LOGOLITE_AUTO_DETECT_FOR`: ("bunyan"|"winston") detects for default `bunyan` or `winston` logging engine (default: none);
+* `LOGOLITE_DEBUGLOG_ENABLED`: (true/false) forces using `debug` module to render logging message (default: false);
 * `LOGOLITE_DEBUGLOG_NAME`: (string) the name for debug logging level (default: `conlog`);
-* `LOGOLITE_DEBUGLOG`: (true/false) forces using `debug` module to render logging message (default: false);
 * `LOGOLITE_TAGS_EMBEDDABLE`: (true/false) enable/disable to embed `tags` array to output message (default: true);
 * `LOGOLITE_TAGS_FIELD_NAME`: (string) field name of embedded tags array in output log object (default: "_tags_");
 * `LOGOLITE_TEXT_EMBEDDABLE`: (true/false) enable/disable to embed formatted message to output log object (default: true);
 * `LOGOLITE_TEXT_FIELD_NAME`: (string) field name of formatted message string in output log object (default: "_text_");
-* `LOGOLITE_TEXTFORMAT_ENABLED`: (true/false) enable/disable format logging object by template string (default: true);
+* `LOGOLITE_TEMPLATE_APPLIED`: (true/false) enable/disable format logging object by template string (default: true);
+* `LOGOLITE_FORMAT_NOT_FOUND_VALUE`: (string) value returned when a placeholder in template is not found (default: not_found_value);
 * `LOGOLITE_INTERCEPTOR_ENABLED`: (true/false) enable/disable interception mode (default: true);
 * `LOGOLITE_STRINGIFY_DISABLED`: (true/false) turns off stringify logging message when call toMessage() method (default: false);
+* `LOGOLITE_STRINGIFY_FAILED_VALUE`: (string) value returned when stringify() is failed (default: stringify_failed);
 * `LOGOLITE_STRINGIFY_PROTECTED`: (true/false) run JSON.stringify() inside try...catch block (default: true);
 * `LOGOLITE_BASE64_UUID`: (true/false) enable/disable base64 UUID format (default true);
