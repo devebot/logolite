@@ -114,7 +114,7 @@ logger.has('debug') && logger.log('debug', subLevel
 * `LOGOLITE_TAGS_FIELD_NAME`: (string) field name of embedded tags array in output log object (default: "_tags_");
 * `LOGOLITE_TEXT_EMBEDDABLE`: (true/false) enable/disable to embed formatted message to output log object (default: true);
 * `LOGOLITE_TEXT_FIELD_NAME`: (string) field name of formatted message string in output log object (default: "_text_");
-* `LOGOLITE_TEXTFORMAT_ENABLED`: (true/false) enable/disable format logging object by template string (default: true);
+* `LOGOLITE_TEMPLATE_APPLIED`: (true/false) enable/disable format logging object by template string (default: true);
 * `LOGOLITE_INTERCEPTOR_ENABLED`: (true/false) enable/disable interception mode (default: true);
 * `LOGOLITE_STRINGIFY_DISABLED`: (true/false) turns off stringify logging message when call toMessage() method (default: false);
 * `LOGOLITE_STRINGIFY_PROTECTED`: (true/false) run JSON.stringify() inside try...catch block (default: true);
