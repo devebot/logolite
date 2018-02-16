@@ -60,16 +60,16 @@ var appTracer = LogTracer.ROOT.branch({
 logger.has('info') && logger.log('info', appTracer
 	.add({
 		message: 'app level logging message',
-		dataInt: 123,
-		dataBoolean: true,
-		dataObject: { key1: 'value 1', key2: 'value 2' },
-		dataString: 'simple string'
+		intValue: 123,
+		boolValue: true,
+		objectData: { key1: 'value 1', key2: 'value 2' },
+		strValue: 'simple string'
 	})
 	.put('singleField', 'put a single key/value')
 	.put('anotherField', 1024)
 	.toMessage({
 		tags: ['FOR_TRACKING_ONLY', 'END_OF_FUNCTION'],
-		text: 'Message - integer {dataInt}, str: {dataString}!'
+		text: 'Message - integer ${intValue}, str: ${strValue}!'
 	}));
 
 // ... your code here ...
@@ -86,7 +86,7 @@ logger.has('debug') && logger.log('debug', subLevel
 		percent: 51
 	})
 	.toMessage({
-		text: '{percent}% completed...'
+		text: '${percent}% completed...'
 	}));
 
 logger.has('debug') && logger.log('debug', subLevel
@@ -95,7 +95,7 @@ logger.has('debug') && logger.log('debug', subLevel
 		percent: 100
 	})
 	.toMessage({
-		text: '{percent}% completed. The task "{name}" has done.'
+		text: '${percent}% completed. The task "${name}" has done.'
 	}));
 
 // ... your code here ...
