@@ -1,8 +1,8 @@
 .idea/
 node_modules/
-*.log
-*.log.*
-*test.sh
 doc/
+lib/
 log/*.log
 log/*.log.*
+*.log
+*.log.*

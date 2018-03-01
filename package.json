@@ -1,10 +1,25 @@
 {
   "name": "logolite",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Lite Virtual Logger and Tracer",
   "main": "index.js",
+  "directories": {
+    "lib": "lib/"
+  },
+  "files": [
+    "bin/",
+    "dist/",
+    "lib/"
+  ],
   "scripts": {
-    "test": "node_modules/.bin/mocha test/tdd/*test.js"
+    "build": "babel src -d lib",
+    "prepublish": "npm run build",
+    "pretest": "npm run build",
+    "test": "mocha --recursive test/**/*-test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devebot/logolite.git"
   },
   "author": "devebot",
   "license": "MIT",
@@ -19,9 +34,8 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
-    "bunyan": "^1.8.12",
-    "chai": "^4.1.2",
-    "mocha": "^4.0.1",
-    "winston": "^2.4.0"
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "mocha": "^4.1.0"
   }
 }
