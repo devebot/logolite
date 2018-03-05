@@ -5,5 +5,12 @@
         "node": "4.0"
       }
     }]
-  ]
+  ],
+  "env": {
+    "production": {
+      "plugins": [
+        "minify-mangle-names"
+      ]
+    }
+  }
 }

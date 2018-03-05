@@ -9,13 +9,18 @@
   "files": [
     "bin/",
     "dist/",
-    "lib/"
+    "lib/",
+    "debug.js",
+    "envtool.js",
+    "uuidv1.js",
+    "uuidv4.js"
   ],
   "scripts": {
     "build": "babel src -d lib",
-    "prepublish": "npm run build",
-    "pretest": "npm run build",
-    "test": "mocha --recursive test/**/*-test.js"
+    "prepublish": "NODE_ENV=production npm run build",
+    "pretest": "NODE_ENV=test npm run build",
+    "test": "mocha --recursive test/**/*-test.js",
+    "verify": "npm run prepublish && mocha --recursive test/**/*-test.js"
   },
   "repository": {
     "type": "git",
@@ -35,6 +40,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-plugin-minify-mangle-names": "^0.3.0",
     "babel-preset-env": "^1.6.1",
     "mocha": "^4.1.0"
   }
