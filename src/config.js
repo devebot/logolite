@@ -14,6 +14,7 @@ var store = {
   TAGS_FIELD_NAME: null,
   TEXT_FIELD_NAME: null,
   ALWAYS_ENABLED: null,
+  ALWAYS_MUTED: null,
   AUTO_DETECT_FOR: null,
   DEBUGLOG_NAME: null,
   DEBUGLOG_NAMES: null,
@@ -78,6 +79,15 @@ var properties = {
         store.ALWAYS_ENABLED = store.ALWAYS_ENABLED.split(',');
       }
       return store.ALWAYS_ENABLED;
+    }
+  },
+  ALWAYS_MUTED: {
+    get: function() {
+      if (store.ALWAYS_MUTED === null) {
+        store.ALWAYS_MUTED = getEnvOpt('LOGOLITE_ALWAYS_MUTED') || '';
+        store.ALWAYS_MUTED = store.ALWAYS_MUTED.split(',');
+      }
+      return store.ALWAYS_MUTED;
     }
   },
   AUTO_DETECT_FOR: {
@@ -234,6 +244,11 @@ misc.reset = function(args) {
 misc.isAlwaysEnabledFor = function(level) {
   if (misc.ALWAYS_ENABLED.indexOf('all') >= 0) return true;
   return misc.ALWAYS_ENABLED.indexOf(level) >= 0;
+}
+
+misc.isAlwaysMutedFor = function(level) {
+  if (misc.ALWAYS_MUTED.indexOf('all') >= 0) return true;
+  return misc.ALWAYS_MUTED.indexOf(level) >= 0;
 }
 
 var isNullOrArray = function(val) {

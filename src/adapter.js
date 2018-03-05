@@ -32,6 +32,7 @@ var Logger = function(kwargs) {
   }
 
   self.log = function(level) {
+    if (LogConfig.isAlwaysMutedFor(level)) return;
     if (isDebugLog(level)) {
       var logargs = Array.prototype.slice.call(arguments, 1);
       debugLog = debugLog || createDebugLogger();
