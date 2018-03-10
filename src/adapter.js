@@ -26,30 +26,38 @@ var Logger = function(kwargs) {
       debugLog = debugLog || createDebugLogger();
       return debugLog.enabled;
     }
-    var rootLevel = kwargs.mappings && kwargs.mappings[level] || level;
+    var realLevel = kwargs.mappings && kwargs.mappings[level] || level;
     var rootLogger = kwargs.store.rootLogger;
-    return rootLogger != null && rootLogger[rootLevel] !== undefined;
+    if (rootLogger && typeof(rootLogger.has) === 'function') {
+      return rootLogger.has(realLevel);
+    }
+    return rootLogger != null && rootLogger[realLevel] !== undefined;
   }
 
   self.log = function(level) {
-    if (LogConfig.isAlwaysMutedFor(level)) return;
-    if (isDebugLog(level)) {
-      var logargs = Array.prototype.slice.call(arguments, 1);
-      debugLog = debugLog || createDebugLogger();
-      debugLog.apply(null, logargs);
-      return;
-    }
-    var rootLevel = kwargs.mappings && kwargs.mappings[level] || level;
-    var rootLogger = kwargs.store.rootLogger;
-    if (rootLogger) {
-      if (typeof(rootLogger.log) === 'function') {
-        if (rootLevel !== level) arguments[0] = rootLevel;
-        rootLogger.log.apply(rootLogger, arguments);
-      } else if (typeof(rootLogger[rootLevel]) === 'function') {
+    if (!LogConfig.isAlwaysMutedFor(level)) {
+      if (isDebugLog(level)) {
         var logargs = Array.prototype.slice.call(arguments, 1);
-        rootLogger[rootLevel].apply(rootLogger, logargs);
+        debugLog = debugLog || createDebugLogger();
+        debugLog.apply(null, logargs);
+        return;
+      }
+      var realLevel = kwargs.mappings && kwargs.mappings[level] || level;
+      var rootLogger = kwargs.store.rootLogger;
+      if (rootLogger) {
+        if (typeof(rootLogger.log) === 'function') {
+          if (realLevel !== level) arguments[0] = realLevel;
+          rootLogger.log.apply(rootLogger, arguments);
+        } else if (typeof(rootLogger[realLevel]) === 'function') {
+          var logargs = Array.prototype.slice.call(arguments, 1);
+          rootLogger[realLevel].apply(rootLogger, logargs);
+        }
       }
     }
+    var realArgs = arguments;
+    kwargs.store.interceptors.forEach(function(logger) {
+      logger.log.apply(logger, realArgs);
+    });
   }
 
   // @Deprecated
@@ -104,7 +112,7 @@ var detectDefaultLogger = function() {
 };
 
 var LogAdapter = function() {
-  var store = { rootLogger: null, isInfoSent: false };
+  var store = { rootLogger: null, isInfoSent: false, interceptors: [] };
   var mockLogger = null;
 
   this.getLogger = function(kwargs) {
@@ -117,7 +125,28 @@ var LogAdapter = function() {
     return store && store.rootLogger;
   }
 
+  this.addInterceptor = function(logger) {
+    if (_isLogger(logger)) {
+      store.interceptors.push(logger);
+    }
+    return this;
+  }
+
+  this.removeInterceptor = function(logger) {
+    var pos = store.interceptors.indexOf(logger);
+    if (pos >= 0) {
+        store.interceptors.splice(pos, 1);
+    }
+    return this;
+  }
+
+  this.clearInterceptors = function() {
+    store.interceptors.length = 0;
+    return this;
+  }
+
   this.connectTo = function(logger, levelToTick) {
+    // @Deprecated
     if (LogConfig.IS_MOCKLOGGER_ENABLED) {
       logger = mockLogger = mockLogger || new MockLogger({
         level: 'all'
@@ -137,6 +166,10 @@ var LogAdapter = function() {
   }
 
   this.connectTo(detectDefaultLogger());
+
+  var _isLogger = function(logger) {
+    return logger && (typeof logger.log === 'function');
+  }
 }
 
 module.exports = new LogAdapter();

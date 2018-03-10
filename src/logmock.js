@@ -19,6 +19,10 @@ var MockLogger = function(params) {
 		}
 	}
 
+	this.has = function (level) {
+		return _isEnabledFor(level);
+	}
+
 	this._alter = function(opts) {
 		opts = opts || {};
 
@@ -53,6 +57,7 @@ var MockLogger = function(params) {
 		if (level == 'all') {
 			_logPosition = _logLevels.length - 1;
 		}
+		debugx.enabled && debugx('_logPosition: %s/%s', _logPosition, level);
 		return this;
 	}
 
@@ -64,8 +69,9 @@ var MockLogger = function(params) {
 	}
 
 	this._reset = function() {
+		var store = this._probe();
 		_cachedMessages.length = 0;
-		return this;
+		return store;
 	}
 
 	var _isEnabledFor = function(level) {
