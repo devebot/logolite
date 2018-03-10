@@ -75,10 +75,9 @@ var MockLogger = function(params) {
 	}
 
 	var _isEnabledFor = function(level) {
-		debug0.enabled && debug0('_isEnabledFor: %s / %s / %s', 
-				level, _logLevels.indexOf(level), _logPosition);
-		return (0 <= _logLevels.indexOf(level)) &&
-				(_logLevels.indexOf(level) <= _logPosition);
+		var p = _logLevels.indexOf(level);
+		debug0.enabled && debug0('_isEnabledFor: %s/%s/%s', level, p, _logPosition);
+		return (0 <= p) && (p <= _logPosition);
 	}
 
 	Object.defineProperty(this, 'messages', {
@@ -86,6 +85,7 @@ var MockLogger = function(params) {
 		set: function(val) {}
 	});
 
+	params.logLevel = params.logLevel || params.level || 'all';
 	params.levels = params.levels || {
 		error: 0,
 		warn: 1,

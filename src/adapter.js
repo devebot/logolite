@@ -146,6 +146,10 @@ var LogAdapter = function() {
     return this;
   }
 
+  this.countInterceptors = function() {
+    return store.interceptors.length;
+  }
+
   this.connectTo = function(logger, levelToTick) {
     // @Deprecated
     if (LogConfig.IS_MOCKLOGGER_ENABLED) {

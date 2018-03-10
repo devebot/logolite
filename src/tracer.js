@@ -185,7 +185,7 @@ Object.defineProperties(LogTracer, {
     get: function() { return LogConfig.IS_INTERCEPTOR_ENABLED },
     set: function(value) {}
   },
-  addStringifyInterceptor: {
+  addInterceptor: {
     get: function() {
       return function(f) {
         if (typeof(f) === 'function' && _interceptors.indexOf(f) < 0) {
@@ -197,7 +197,7 @@ Object.defineProperties(LogTracer, {
     },
     set: function(value) {}
   },
-  removeStringifyInterceptor: {
+  removeInterceptor: {
     get: function() {
       return function(f) {
         var pos = _interceptors.indexOf(f);
@@ -210,7 +210,7 @@ Object.defineProperties(LogTracer, {
     },
     set: function(value) {}
   },
-  clearStringifyInterceptors: {
+  clearInterceptors: {
     get: function() {
       return function() {
         _interceptors.length = 0;
@@ -219,7 +219,7 @@ Object.defineProperties(LogTracer, {
     },
     set: function(value) {}
   },
-  stringifyInterceptorCount: {
+  countInterceptors: {
     get: function() {
       return function() {
         return _interceptors.length;
@@ -277,7 +277,7 @@ Object.defineProperties(LogTracer, {
   setupDefaultInterceptors: {
     get: function() {
       return function(descriptors) {
-        LogTracer.clearStringifyInterceptors();
+        LogTracer.clearInterceptors();
         if (!descriptors instanceof Array) {
           throw new Error('descriptors is not an array');
         }
@@ -293,7 +293,7 @@ Object.defineProperties(LogTracer, {
           }
           var appender = LogTracer.accumulationAppender.bind(null,
             descriptor.accumulator, descriptor.mappings);
-          LogTracer.addStringifyInterceptor(appender);
+          LogTracer.addInterceptor(appender);
         });
       }
     },
@@ -426,5 +426,11 @@ Object.defineProperties(LogTracer, {
     set: function(val) {}
   }
 });
+
+// @Deprecated
+LogTracer.addStringifyInterceptor = LogTracer.addInterceptor;
+LogTracer.removeStringifyInterceptor = LogTracer.removeInterceptor;
+LogTracer.clearStringifyInterceptors = LogTracer.clearInterceptors;
+LogTracer.stringifyInterceptorCount = LogTracer.countInterceptors;
 
 module.exports = LogTracer;
