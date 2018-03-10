@@ -21,12 +21,12 @@ var Logger = function(kwargs) {
   }
 
   self.has = function(level) {
-    if (LogConfig.isAlwaysEnabledFor(level)) return true;
-    if (isDebugLog(level)) {
+    var realLevel = kwargs.mappings && kwargs.mappings[level] || level;
+    if (LogConfig.isAlwaysEnabledFor(realLevel)) return true;
+    if (isDebugLog(realLevel)) {
       debugLog = debugLog || createDebugLogger();
       return debugLog.enabled;
     }
-    var realLevel = kwargs.mappings && kwargs.mappings[level] || level;
     var rootLogger = kwargs.store.rootLogger;
     if (rootLogger && typeof(rootLogger.has) === 'function') {
       return rootLogger.has(realLevel);
@@ -35,14 +35,14 @@ var Logger = function(kwargs) {
   }
 
   self.log = function(level) {
-    if (!LogConfig.isAlwaysMutedFor(level)) {
-      if (isDebugLog(level)) {
+    var realLevel = kwargs.mappings && kwargs.mappings[level] || level;
+    if (!LogConfig.isAlwaysMutedFor(realLevel)) {
+      if (isDebugLog(realLevel)) {
         var logargs = Array.prototype.slice.call(arguments, 1);
         debugLog = debugLog || createDebugLogger();
         debugLog.apply(null, logargs);
         return;
       }
-      var realLevel = kwargs.mappings && kwargs.mappings[level] || level;
       var rootLogger = kwargs.store.rootLogger;
       if (rootLogger) {
         if (typeof(rootLogger.log) === 'function') {
@@ -55,6 +55,7 @@ var Logger = function(kwargs) {
       }
     }
     var realArgs = arguments;
+    if (realLevel !== level) realArgs[0] = realLevel;
     kwargs.store.interceptors.forEach(function(logger) {
       logger.log.apply(logger, realArgs);
     });
