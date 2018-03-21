@@ -16,7 +16,6 @@ var store = {
   ALWAYS_ENABLED: null,
   ALWAYS_MUTED: null,
   AUTO_DETECT_FOR: null,
-  DEBUGLOG_NAME: null,
   DEBUGLOG_NAMES: null,
   USE_BASE64_UUID: null,
   TRACKING_DEPTH: null,
@@ -34,12 +33,18 @@ var store = {
 //====================================================================
 
 var parseDebuglogLevels = function() {
-  var consoleLevels = getEnvOpt('LOGOLITE_DEBUGLOG_NAME') || 'conlog';
-  store.DEBUGLOG_NAMES = consoleLevels.split(',').map(function(item) {
-    return item.trim();
-  });
-  if (store.DEBUGLOG_NAMES.length > 0) {
-    store.DEBUGLOG_NAME = store.DEBUGLOG_NAME || store.DEBUGLOG_NAMES[0];
+  var consoleLevels = getEnvOpt('LOGOLITE_DEBUGLOG_ABSORB') ||
+      getEnvOpt('LOGOLITE_DEBUGLOG_NAMES') ||
+      getEnvOpt('LOGOLITE_DEBUGLOG_NAME') || 'conlog';
+  if (consoleLevels === 'null' || consoleLevels === 'none') {
+    store.DEBUGLOG_NAMES = [];
+  } else {
+    store.DEBUGLOG_NAMES = consoleLevels.split(',').map(function(item) {
+      return item.trim();
+    });
+    if (store.DEBUGLOG_NAMES.indexOf('conlog') < 0) {
+      store.DEBUGLOG_NAMES.push('conlog');
+    }
   }
 }
 
@@ -95,12 +100,6 @@ var properties = {
       store.AUTO_DETECT_FOR = store.AUTO_DETECT_FOR ||
           getEnvOpt('LOGOLITE_AUTO_DETECT_FOR') || '';
       return store.AUTO_DETECT_FOR;
-    }
-  },
-  DEBUGLOG_NAME: {
-    get: function() {
-      if (store.DEBUGLOG_NAME === null) parseDebuglogLevels();
-      return store.DEBUGLOG_NAME;
     }
   },
   DEBUGLOG_NAMES: {

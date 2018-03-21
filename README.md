@@ -109,7 +109,7 @@ logger.has('debug') && logger.log('debug', subLevel
 * `LOGOLITE_ALWAYS_ENABLED`: (string) the list of levels that are always enabled (default: none, "all" for all);
 * `LOGOLITE_AUTO_DETECT_FOR`: ("bunyan"|"winston") detects for default `bunyan` or `winston` logging engine (default: none);
 * `LOGOLITE_DEBUGLOG_ENABLED`: (true/false) forces using `debug` module to render logging message (default: false);
-* `LOGOLITE_DEBUGLOG_NAME`: (string) the name for debug logging level (default: `conlog`);
+* `LOGOLITE_DEBUGLOG_ABSORB`: (string) the name for debug logging levels is forwarded to console (default: `conlog`);
 * `LOGOLITE_TAGS_EMBEDDABLE`: (true/false) enable/disable to embed `tags` array to output message (default: true);
 * `LOGOLITE_TAGS_FIELD_NAME`: (string) field name of embedded tags array in output log object (default: "_tags_");
 * `LOGOLITE_TEXT_EMBEDDABLE`: (true/false) enable/disable to embed formatted message to output log object (default: true);

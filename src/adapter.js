@@ -15,8 +15,9 @@ var Logger = function(kwargs) {
   }
 
   var isDebugLog = function(level) {
-    return LogConfig.IS_DEBUGLOG_ENABLED || kwargs.target === 'conlog' ||
-        LogConfig.DEBUGLOG_NAME === level ||
+    return kwargs.target === 'conlog' ||
+        LogConfig.IS_DEBUGLOG_ENABLED ||
+        LogConfig.DEBUGLOG_NAMES.indexOf('all') >= 0 ||
         LogConfig.DEBUGLOG_NAMES.indexOf(level) >= 0;
   }
 
