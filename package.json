@@ -16,11 +16,14 @@
     "uuidv4.js"
   ],
   "scripts": {
-    "build": "babel src -d lib",
+    "build": "babel ./src -d ./lib",
+    "build-client": "gulp build",
+    "clean": "rm -rf ./lib",
+    "clean-client": "gulp clean",
     "prepublish": "NODE_ENV=production npm run build",
     "pretest": "NODE_ENV=test npm run build",
-    "test": "mocha --recursive test/**/*-test.js",
-    "verify": "npm run prepublish && mocha --recursive test/**/*-test.js"
+    "test": "mocha --recursive ./test/**/*-test.js",
+    "verify": "npm run prepublish && mocha --recursive ./test/**/*-test.js"
   },
   "repository": {
     "type": "git",
@@ -42,6 +45,18 @@
     "babel-cli": "^6.26.0",
     "babel-plugin-minify-mangle-names": "^0.3.0",
     "babel-preset-env": "^1.6.1",
-    "mocha": "^4.1.0"
+    "babelify": "^8.0.0",
+    "browserify": "^16.1.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.1",
+    "gulp-browserify": "^0.5.1",
+    "gulp-clean": "^0.4.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-plumber": "^1.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^3.0.0",
+    "gulp-webserver": "^0.9.1",
+    "mocha": "^4.1.0",
+    "run-sequence": "^2.2.1"
   }
 }

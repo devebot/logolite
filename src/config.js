@@ -1,9 +1,9 @@
 'use strict';
 
 var os = require('os');
-var appRootPath = require('app-root-path');
 var uuidV4 = require('uuid/v4');
 var getEnvOpt = require('./envtool').getEnvOpt;
+var dbg = require('debug')('logolite:LogConfig');
 var misc = {}
 
 //====================================================================
@@ -174,6 +174,9 @@ var properties = {
             store.IS_TEMPLATE_APPLIED = !(getEnvOpt('DEBUG') == undefined);
           }
         }
+        dbg.enabled && dbg('IS_TEMPLATE_APPLIED <- %s', store.IS_TEMPLATE_APPLIED);
+      } else {
+        dbg.enabled && dbg('IS_TEMPLATE_APPLIED -> %s', store.IS_TEMPLATE_APPLIED);
       }
       return store.IS_TEMPLATE_APPLIED;
     }
@@ -234,8 +237,10 @@ misc.sortLevels = function(levelMap, isInteger) {
 misc.reset = function(args) {
   args = args || {};
   Object.keys(store).forEach(function(key) {
+    var oldVal = store[key];
     delete store[key];
     store[key] = args[key] || null;
+    dbg.enabled && dbg(' - store[%s]: %s <- %s', key, oldVal, store[key]);
   });
   return misc;
 }
@@ -291,7 +296,11 @@ misc.stringify = function(data) {
 }
 
 misc.getPackageInfo = function() {
-  return require(appRootPath.resolve('./package.json'));
+  if (require.main) {
+    var appRootPath = require('app-root-path');
+    return require(appRootPath.resolve('./package.json'));
+  }
+  return require('./../package.json');
 }
 
 var libraryInfo = null;

@@ -66,53 +66,6 @@ var Logger = function(kwargs) {
   self.isEnabledFor = self.has;
 }
 
-var detectDefaultLogger = function() {
-  switch(LogConfig.AUTO_DETECT_FOR) {
-    case 'bunyan':
-      try {
-        var bunyan = require('bunyan');
-        var logger = bunyan.createLogger({
-          name: 'logolite',
-          level: 'debug'
-        });
-        return logger;
-      } catch(err) {
-        return null;
-      }
-      break;
-    case 'log4js':
-      try {
-        var log4js = require('log4js');
-        var log4jsLogger = log4js.getLogger();
-        log4jsLogger.level = 'debug';
-        return log4jsLogger;
-      } catch(err) {
-        return null;
-      }
-      break;
-    case 'winston':
-      try {
-        var winston = require('winston');
-        winston.configure({
-          transports: [
-            new winston.transports.Console({
-              level: 'debug',
-              json: false,
-              timestamp: true,
-              colorize: true
-            })
-          ]
-        });
-        return winston;
-      } catch(err) {
-        return null;
-      }
-      break;
-    default:
-      return null;
-  }
-};
-
 var LogAdapter = function() {
   var store = { rootLogger: null, isInfoSent: false, interceptors: [] };
   var mockLogger = null;
@@ -171,7 +124,7 @@ var LogAdapter = function() {
     }
   }
 
-  this.connectTo(detectDefaultLogger());
+  this.connectTo(null);
 
   var _isLogger = function(logger) {
     return logger && (typeof logger.log === 'function');

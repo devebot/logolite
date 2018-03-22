@@ -1,8 +1,7 @@
 'use strict';
 
 var LogConfig = require('./config');
-var debugx = require('debug')('logolite:logmock');
-var debug0 = require('debug')('verbose:logolite:logmock');
+var dbg = require('debug')('logolite:logmock');
 
 var MockLogger = function(params) {
   params = params || {};
@@ -36,12 +35,12 @@ var MockLogger = function(params) {
 
       // set the new levels
       _logLevelMap = opts.levels;
-      debugx.enabled && debugx('_logLevelMap: %s', JSON.stringify(_logLevelMap));
+      dbg.enabled && dbg('_logLevelMap: %s', JSON.stringify(_logLevelMap));
 
       _logLevels = LogConfig.sortLevels(_logLevelMap).map(function(item) {
         return item.key;
       });
-      debugx.enabled && debugx('_logLevels: %s', JSON.stringify(_logLevels));
+      dbg.enabled && dbg('_logLevels: %s', JSON.stringify(_logLevels));
 
       _logLevels.forEach(function(logLevel) {
         self[logLevel] = self.log.bind(self, logLevel);
@@ -57,7 +56,7 @@ var MockLogger = function(params) {
     if (level == 'all') {
       _logPosition = _logLevels.length - 1;
     }
-    debugx.enabled && debugx('_logPosition: %s/%s', _logPosition, level);
+    dbg.enabled && dbg('_logPosition: %s/%s', _logPosition, level);
     return this;
   }
 
@@ -76,7 +75,7 @@ var MockLogger = function(params) {
 
   var _isEnabledFor = function(level) {
     var p = _logLevels.indexOf(level);
-    debug0.enabled && debug0('_isEnabledFor: %s/%s/%s', level, p, _logPosition);
+    dbg.enabled && dbg('_isEnabledFor: %s/%s/%s', level, p, _logPosition);
     return (0 <= p) && (p <= _logPosition);
   }
 
