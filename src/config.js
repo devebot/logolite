@@ -33,9 +33,10 @@ var store = {
 //====================================================================
 
 var parseDebuglogLevels = function() {
-  var consoleLevels = getEnvOpt('LOGOLITE_DEBUGLOG_ABSORB') ||
-      getEnvOpt('LOGOLITE_DEBUGLOG_NAMES') ||
-      getEnvOpt('LOGOLITE_DEBUGLOG_NAME') || 'conlog';
+  var consoleLevels = getEnvOpt('LOGOLITE_DEBUGLOG_GREEDY')
+      || getEnvOpt('LOGOLITE_DEBUGLOG_ABSORB')
+      || getEnvOpt('LOGOLITE_DEBUGLOG_NAMES')
+      || getEnvOpt('LOGOLITE_DEBUGLOG_NAME') || 'conlog';
   if (consoleLevels === 'null' || consoleLevels === 'none') {
     store.DEBUGLOG_NAMES = [];
   } else {

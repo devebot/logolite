@@ -8,7 +8,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
 	<script>
 		localStorage.debug='example*';
-		localStorage.LOGOLITE_DEBUGLOG_ABSORB='info,warn,error';
+		localStorage.LOGOLITE_DEBUGLOG_GREEDY='info,warn,error';
 	</script>
 	<script type="text/javascript" src="js/logolite.js"></script>
 	<script>
@@ -19,7 +19,7 @@
 		});
 		console.log('============ Examples ==============');
 		LX.has('conlog') && LX.log('conlog', '[conlog] message will always be displayed');
-		LX.has('conlog') && LX.log('conlog', '%s levels have been declared in LOGOLITE_DEBUGLOG_ABSORB', 
+		LX.has('conlog') && LX.log('conlog', '%s levels have been declared in LOGOLITE_DEBUGLOG_GREEDY', 
 				JSON.stringify(logolite.LogConfig.DEBUGLOG_NAMES));
 		LX.has('silly') && LX.log('silly', '[silly] is invisible');
 		LX.has('trace') && LX.log('trace', '[trace] is invisible');
