@@ -32,26 +32,17 @@ var store = {
 
 //====================================================================
 
-var parseDebuglogLevels = function() {
-  var consoleLevels = getEnvOpt('LOGOLITE_DEBUGLOG_GREEDY')
-      || getEnvOpt('LOGOLITE_DEBUGLOG_ABSORB')
-      || getEnvOpt('LOGOLITE_DEBUGLOG_NAMES')
-      || getEnvOpt('LOGOLITE_DEBUGLOG_NAME') || 'conlog';
-  if (consoleLevels === 'null' || consoleLevels === 'none') {
-    store.DEBUGLOG_NAMES = [];
-  } else {
-    store.DEBUGLOG_NAMES = consoleLevels.split(',').map(function(item) {
-      return item.trim();
-    });
-    if (store.DEBUGLOG_NAMES.indexOf('conlog') < 0) {
-      store.DEBUGLOG_NAMES.push('conlog');
-    }
-  }
+var isLiveLoad = true;
+
+var doLiveLoad = function(fieldName) {
+  if (getEnvOpt('NODE_ENV') !== 'test') isLiveLoad = false;
+  if (store.hasOwnProperty(fieldName))  store[fieldName] = null;
 }
 
 var properties = {
   DEFAULT_INSTANCE_ID: {
     get: function() {
+      isLiveLoad && doLiveLoad('DEFAULT_INSTANCE_ID');
       store.DEFAULT_INSTANCE_ID = store.DEFAULT_INSTANCE_ID ||
           getEnvOpt('LOGOLITE_INSTANCE_ID') || misc.getLogID();
       return store.DEFAULT_INSTANCE_ID;
@@ -59,6 +50,7 @@ var properties = {
   },
   DEFAULT_SECTOR: {
     get: function() {
+      isLiveLoad && doLiveLoad('DEFAULT_SECTOR');
       store.DEFAULT_SECTOR = store.DEFAULT_SECTOR ||
           getEnvOpt('LOGOLITE_DEFAULT_SECTOR') || 'logolite-default';
       return store.DEFAULT_SECTOR;
@@ -66,6 +58,7 @@ var properties = {
   },
   TAGS_FIELD_NAME: {
     get: function() {
+      isLiveLoad && doLiveLoad('TAGS_FIELD_NAME');
       store.TAGS_FIELD_NAME = store.TAGS_FIELD_NAME ||
           getEnvOpt('LOGOLITE_TAGS_FIELD_NAME') || '_tags_';
       return store.TAGS_FIELD_NAME;
@@ -73,6 +66,7 @@ var properties = {
   },
   TEXT_FIELD_NAME: {
     get: function() {
+      isLiveLoad && doLiveLoad('TEXT_FIELD_NAME');
       store.TEXT_FIELD_NAME = store.TEXT_FIELD_NAME ||
           getEnvOpt('LOGOLITE_TEXT_FIELD_NAME') || '_text_';
       return store.TEXT_FIELD_NAME;
@@ -80,24 +74,25 @@ var properties = {
   },
   ALWAYS_ENABLED: {
     get: function() {
+      isLiveLoad && doLiveLoad('ALWAYS_ENABLED');
       if (store.ALWAYS_ENABLED === null) {
-        store.ALWAYS_ENABLED = getEnvOpt('LOGOLITE_ALWAYS_ENABLED') || '';
-        store.ALWAYS_ENABLED = store.ALWAYS_ENABLED.split(',');
+        store.ALWAYS_ENABLED = stringToArray(getEnvOpt('LOGOLITE_ALWAYS_ENABLED'));
       }
       return store.ALWAYS_ENABLED;
     }
   },
   ALWAYS_MUTED: {
     get: function() {
+      isLiveLoad && doLiveLoad('ALWAYS_MUTED');
       if (store.ALWAYS_MUTED === null) {
-        store.ALWAYS_MUTED = getEnvOpt('LOGOLITE_ALWAYS_MUTED') || '';
-        store.ALWAYS_MUTED = store.ALWAYS_MUTED.split(',');
+        store.ALWAYS_MUTED = stringToArray(getEnvOpt('LOGOLITE_ALWAYS_MUTED'));
       }
       return store.ALWAYS_MUTED;
     }
   },
   AUTO_DETECT_FOR: {
     get: function() {
+      isLiveLoad && doLiveLoad('AUTO_DETECT_FOR');
       store.AUTO_DETECT_FOR = store.AUTO_DETECT_FOR ||
           getEnvOpt('LOGOLITE_AUTO_DETECT_FOR') || '';
       return store.AUTO_DETECT_FOR;
@@ -105,12 +100,16 @@ var properties = {
   },
   DEBUGLOG_NAMES: {
     get: function() {
-      if (store.DEBUGLOG_NAMES === null) parseDebuglogLevels();
+      isLiveLoad && doLiveLoad('DEBUGLOG_NAMES');
+      if (store.DEBUGLOG_NAMES === null) {
+        store.DEBUGLOG_NAMES = parseDebuglogLevels();
+      }
       return store.DEBUGLOG_NAMES;
     }
   },
   USE_BASE64_UUID: {
     get: function() {
+      isLiveLoad && doLiveLoad('USE_BASE64_UUID');
       if (store.USE_BASE64_UUID === null) {
         store.USE_BASE64_UUID = getEnvOpt('LOGOLITE_BASE64_UUID') !== 'false';
       }
@@ -119,6 +118,7 @@ var properties = {
   },
   TRACKING_DEPTH: {
     get: function() {
+      isLiveLoad && doLiveLoad('TRACKING_DEPTH');
       if (store.TRACKING_DEPTH === null) {
         var depth = parseInt(getEnvOpt('LOGOLITE_TRACKING_DEPTH'));
         store.TRACKING_DEPTH = isNaN(depth) ? 2 : depth;
@@ -128,6 +128,7 @@ var properties = {
   },
   IS_DEBUGLOG_ENABLED: {
     get: function() {
+      isLiveLoad && doLiveLoad('IS_DEBUGLOG_ENABLED');
       if (store.IS_DEBUGLOG_ENABLED === null) {
         store.IS_DEBUGLOG_ENABLED = getEnvOpt('LOGOLITE_DEBUGLOG_ENABLED') === 'true';
       }
@@ -136,6 +137,7 @@ var properties = {
   },
   IS_MOCKLOGGER_ENABLED: {
     get: function() {
+      isLiveLoad && doLiveLoad('IS_MOCKLOGGER_ENABLED');
       if (store.IS_MOCKLOGGER_ENABLED === null) {
         store.IS_MOCKLOGGER_ENABLED = getEnvOpt('LOGOLITE_MOCKLOGGER_ENABLED') === 'true';
       }
@@ -144,6 +146,7 @@ var properties = {
   },
   IS_INTERCEPTOR_ENABLED: {
     get: function() {
+      isLiveLoad && doLiveLoad('IS_INTERCEPTOR_ENABLED');
       if (store.IS_INTERCEPTOR_ENABLED === null) {
         store.IS_INTERCEPTOR_ENABLED = getEnvOpt('LOGOLITE_INTERCEPTOR_ENABLED') !== 'false';
       }
@@ -152,6 +155,7 @@ var properties = {
   },
   IS_TAGS_EMBEDDABLE: {
     get: function() {
+      isLiveLoad && doLiveLoad('IS_TAGS_EMBEDDABLE');
       if (store.IS_TAGS_EMBEDDABLE === null) {
         store.IS_TAGS_EMBEDDABLE = getEnvOpt('LOGOLITE_TAGS_EMBEDDABLE') !== 'false';
       }
@@ -160,6 +164,7 @@ var properties = {
   },
   IS_TEXT_EMBEDDABLE: {
     get: function() {
+      isLiveLoad && doLiveLoad('IS_TEXT_EMBEDDABLE');
       if (store.IS_TEXT_EMBEDDABLE === null) {
         store.IS_TEXT_EMBEDDABLE = getEnvOpt('LOGOLITE_TEXT_EMBEDDABLE') === 'true';
       }
@@ -168,6 +173,7 @@ var properties = {
   },
   IS_TEMPLATE_APPLIED: {
     get: function() {
+      isLiveLoad && doLiveLoad('IS_TEMPLATE_APPLIED');
       if (store.IS_TEMPLATE_APPLIED == null) {
         store.IS_TEMPLATE_APPLIED = getEnvOpt('LOGOLITE_TEMPLATE_APPLIED') === 'true';
         if (store.IS_TEMPLATE_APPLIED !== true) {
@@ -184,6 +190,7 @@ var properties = {
   },
   IS_TRACING_ID_PREDEFINED: {
     get: function() {
+      isLiveLoad && doLiveLoad('IS_TRACING_ID_PREDEFINED');
       if (store.IS_TRACING_ID_PREDEFINED === null) {
         store.IS_TRACING_ID_PREDEFINED = getEnvOpt('LOGOLITE_TRACING_ID_PREDEFINED') === 'true';
       }
@@ -192,6 +199,7 @@ var properties = {
   },
   IS_STRINGIFY_ENABLED: {
     get: function() {
+      isLiveLoad && doLiveLoad('IS_STRINGIFY_ENABLED');
       if (store.IS_STRINGIFY_ENABLED === null) {
         store.IS_STRINGIFY_ENABLED = getEnvOpt('LOGOLITE_STRINGIFY_DISABLED') !== 'true';
       }
@@ -200,6 +208,7 @@ var properties = {
   },
   IS_STRINGIFY_PROTECTED: {
     get: function() {
+      isLiveLoad && doLiveLoad('IS_STRINGIFY_PROTECTED');
       if (store.IS_STRINGIFY_PROTECTED === null) {
         store.IS_STRINGIFY_PROTECTED = getEnvOpt('LOGOLITE_STRINGIFY_PROTECTED') !== 'false';
       }
@@ -254,14 +263,6 @@ misc.isAlwaysEnabledFor = function(level) {
 misc.isAlwaysMutedFor = function(level) {
   if (misc.ALWAYS_MUTED.indexOf('all') >= 0) return true;
   return misc.ALWAYS_MUTED.indexOf(level) >= 0;
-}
-
-var isNullOrArray = function(val) {
-  return (val instanceof Array) || (val === null);
-}
-
-var isNullOrString = function(val) {
-  return (typeof(val) === 'string') || (val === null);
 }
 
 misc.getLogID = function(opts) {
@@ -327,3 +328,37 @@ Object.defineProperties(misc, {
 });
 
 module.exports = misc;
+
+//====================================================================
+
+var parseDebuglogLevels = function() {
+  var levels;
+  var consoleLevels = getEnvOpt('LOGOLITE_DEBUGLOG_GREEDY')
+      || getEnvOpt('LOGOLITE_DEBUGLOG_ABSORB')
+      || getEnvOpt('LOGOLITE_DEBUGLOG_NAMES')
+      || getEnvOpt('LOGOLITE_DEBUGLOG_NAME') || 'conlog';
+  if (consoleLevels === 'null' || consoleLevels === 'none') {
+    levels = [];
+  } else {
+    levels = stringToArray(consoleLevels);
+    if (levels.indexOf('conlog') < 0) {
+      levels.push('conlog');
+    }
+  }
+  return levels;
+}
+
+var stringToArray = function(labels) {
+  labels = labels || '';
+  return labels.split(',').map(function(item) {
+    return item.trim();
+  });
+}
+
+var isNullOrArray = function(val) {
+  return (val instanceof Array) || (val === null);
+}
+
+var isNullOrString = function(val) {
+  return (typeof(val) === 'string') || (val === null);
+}
