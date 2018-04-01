@@ -2,6 +2,7 @@
 
 var os = require('os');
 var uuidV4 = require('uuid/v4');
+var Buffer = global.Buffer || require('buffer').Buffer;
 var getEnvOpt = require('./envtool').getEnvOpt;
 var dbg = require('debug')('logolite:LogConfig');
 var misc = {}
@@ -242,6 +243,36 @@ misc.sortLevels = function(levelMap, isInteger) {
     });
   }
   return sortable; // array in format [{key:k1, value:v1}, {key:k2, value:v2}, ...]
+}
+
+misc.get = function(fieldNames) {
+  if (typeof fieldNames === 'string') {
+    fieldNames = fieldNames.split(',').map(function(name) {
+      return name.trim();
+    });
+  }
+  if (fieldNames instanceof Array) {
+    if (fieldNames.length === 1) {
+      return store[fieldNames[0]];
+    }
+    var output = {};
+    Object.keys(store).forEach(function(key) {
+      if (fieldNames.indexOf(key) >= 0) {
+        output[key] = store[key];
+      }
+    });
+    return output;
+  }
+}
+
+misc.set = function(args) {
+  args = args || {};
+  Object.keys(store).forEach(function(key) {
+    if (key in args) {
+      store[key] = args[key];
+    }
+  });
+  return misc;
 }
 
 misc.reset = function(args) {
