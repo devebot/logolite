@@ -329,11 +329,15 @@ misc.stringify = function(data) {
 }
 
 misc.getPackageInfo = function() {
-  if (require.main) {
-    var appRootPath = require('app-root-path');
-    return require(appRootPath.resolve('./package.json'));
+  try {
+    if (require.main) {
+      var appRootPath = require('app-root-path');
+      return require(appRootPath.resolve('./package.json'));
+    }
+    return require('./../package.json');
+  } catch (err) {
+    return {};
   }
-  return require('./../package.json');
 }
 
 var libraryInfo = null;
