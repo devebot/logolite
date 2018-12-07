@@ -1,6 +1,6 @@
 {
   "name": "logolite",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Lite Virtual Logger and Tracer",
   "main": "index.js",
   "directories": {

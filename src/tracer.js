@@ -12,7 +12,6 @@ var LogTracer = function(params) {
     key: 'instanceId',
     value: LogConfig.DEFAULT_INSTANCE_ID
   };
-  var self = this;
 
   var __parent = params.parent;
   var __key = params.key;
@@ -37,7 +36,7 @@ var LogTracer = function(params) {
     }
   });
 
-  self.clear = function() {
+  this.clear = function() {
     var __storeKeys = Object.keys(__store);
     if (__storeKeys.length > __frozen.length) {
       __storeKeys.forEach(function(fieldName) {
@@ -47,7 +46,8 @@ var LogTracer = function(params) {
     return this;
   }
 
-  self.reset = function() {
+  this.reset = function() {
+    let self = this;
     __store = __clearMap(__store);
     if (__predefined) {
       if (self.parent) {
@@ -73,7 +73,7 @@ var LogTracer = function(params) {
     return this;
   }
 
-  self.branch = function(origin) {
+  this.branch = function(origin) {
     return new LogTracer({
       parent: this,
       key: origin.key,
@@ -81,20 +81,20 @@ var LogTracer = function(params) {
     });
   }
 
-  self.copy = function() {
+  this.copy = function() {
     return new LogTracer(this);
   }
 
-  self.get = function(key) {
+  this.get = function(key) {
     return __store[key];
   }
 
-  self.put = function(key, value) {
+  this.put = function(key, value) {
     if (key && value) __store[key] = value;
     return this;
   }
 
-  self.add = function(map) {
+  this.add = function(map) {
     if (map) {
       Object.keys(map).forEach(function(key) {
         __store[key] = map[key];
@@ -103,10 +103,10 @@ var LogTracer = function(params) {
     return this;
   }
 
-  self.toMessage = function(opts) {
+  this.toMessage = function(opts) {
     opts = opts || {};
     var output = null, logobj, tags, text;
-    if (LogConfig.IS_INTERCEPTOR_ENABLED) {
+    if (LogConfig.IS_INTERCEPTOR_ENABLED && _interceptors.length > 0) {
       logobj = LogConfig.clone(__store);
     }
     if (LogConfig.IS_TAGS_EMBEDDABLE || LogConfig.IS_INTERCEPTOR_ENABLED) {
@@ -131,7 +131,7 @@ var LogTracer = function(params) {
     } else {
       output = LogConfig.clone(__store);
     }
-    if (LogConfig.IS_INTERCEPTOR_ENABLED) {
+    if (LogConfig.IS_INTERCEPTOR_ENABLED && _interceptors.length > 0) {
       if (LogConfig.IS_TAGS_EMBEDDABLE && tags) {
         logobj[LogConfig.TAGS_FIELD_NAME]= tags;
       }
@@ -142,19 +142,19 @@ var LogTracer = function(params) {
         interceptor(logobj, tags, __key, __value, __parent);
       });
     }
-    opts.reset && self.reset();
-    (opts.clear !== false) && self.clear();
+    opts.reset && this.reset();
+    (opts.clear !== false) && this.clear();
     return output;
   }
 
-  self.stringify = function(opts) {
+  this.stringify = function(opts) {
     opts = opts || {};
     opts.stringify = true;
-    return self.toMessage(opts);
+    return this.toMessage(opts);
   }
 
-  self.toString = function(opts) {
-    return self.stringify(opts);
+  this.toString = function(opts) {
+    return this.stringify(opts);
   }
 
   var __clearMap = function(map) {
@@ -164,14 +164,14 @@ var LogTracer = function(params) {
     return map;
   }
 
-  Object.defineProperties(self, {
+  Object.defineProperties(this, {
     getLogID: {
       get: function() { return LogConfig.getLogID },
       set: function(value) {}
     }
   });
 
-  self.reset();
+  this.reset();
 }
 
 var _interceptors = [];

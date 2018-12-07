@@ -55,11 +55,13 @@ var Logger = function(kwargs) {
         }
       }
     }
-    var realArgs = arguments;
-    if (realLevel !== level) realArgs[0] = realLevel;
-    kwargs.store.interceptors.forEach(function(logger) {
-      logger.log.apply(logger, realArgs);
-    });
+    if (kwargs.store.interceptors.length > 0) {
+      var realArgs = arguments;
+      if (realLevel !== level) realArgs[0] = realLevel;
+      kwargs.store.interceptors.forEach(function(logger) {
+        logger.log.apply(logger, realArgs);
+      });
+    }
   }
 
   // @Deprecated
@@ -104,7 +106,7 @@ var LogAdapter = function() {
     return store.interceptors.length;
   }
 
-  this.connectTo = function(logger, levelToTick) {
+  this.connectTo = function(logger, opts) {
     // @Deprecated
     if (LogConfig.IS_MOCKLOGGER_ENABLED) {
       logger = mockLogger = mockLogger || new MockLogger({
@@ -116,15 +118,37 @@ var LogAdapter = function() {
       store.rootLogger = logger;
     }
     if (changed || !store.isInfoSent) {
-      levelToTick = levelToTick || 'info';
-      this.getLogger().log(levelToTick, LogTracer.ROOT
+      if (typeof opts === 'string') {
+        opts = { onLevel: opts }
+      }
+      opts = opts || {};
+      opts.onLevel = opts.onLevel || 'info';
+      this.getLogger({ mappings: opts.mappings }).log(opts.onLevel, LogTracer.ROOT
           .add(LogConfig.libraryInfo)
           .toMessage({ tags: ['logolite-metadata'], reset: true }));
       store.isInfoSent = true;
     }
   }
 
-  this.connectTo(null);
+  this.reset = function() {
+    Object.keys(store).forEach(function(field) {
+      if (field === 'rootLogger') {
+        store[field] = null;
+      } else
+      if (field === 'isInfoSent') {
+        store[field] = false;
+      } else
+      if (field === 'interceptors') {
+        store[field].length = 0;
+      }
+      else {
+        delete store[field];
+      }
+    });
+    return this;
+  }
+
+  // this.connectTo(null);
 
   var _isLogger = function(logger) {
     return logger && (typeof logger.log === 'function');

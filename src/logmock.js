@@ -1,10 +1,12 @@
 'use strict';
 
 var LogConfig = require('./config');
+var util = require('util');
 var dbg = require('debug')('logolite:logmock');
 
 var MockLogger = function(params) {
   params = params || {};
+  params.action = params.action || 'cache';
 
   var self = this;
   var _logLevelMap = null;
@@ -14,7 +16,18 @@ var MockLogger = function(params) {
 
   this.log = function(level) {
     if (_isEnabledFor(level)) {
-      _cachedMessages.push(arguments);
+      switch(params.action) {
+        case 'cache': {
+          _cachedMessages.push(arguments);
+          break;
+        }
+        case 'print': {
+          var args = Array.prototype.slice.call(arguments, 1);
+          var str = util.format.apply(util, args);
+          console.log(new Date().toISOString() + ' [' + level + '] ' + str);
+          break;
+        }
+      }
     }
   }
 
@@ -26,7 +39,7 @@ var MockLogger = function(params) {
     opts = opts || {};
 
     if (opts.levels && typeof(opts.levels) === 'object') {
-      // clean the old methods
+      // clear the old methods
       if (_logLevels instanceof Array) {
         _logLevels.forEach(function(logLevel) {
           delete self[logLevel];
@@ -42,10 +55,12 @@ var MockLogger = function(params) {
       });
       dbg.enabled && dbg('_logLevels: %s', JSON.stringify(_logLevels));
 
+      // define the new methods
       _logLevels.forEach(function(logLevel) {
         self[logLevel] = self.log.bind(self, logLevel);
       });
 
+      // default logging level: all
       _logPosition = _logLevels.length - 1;
     }
 
