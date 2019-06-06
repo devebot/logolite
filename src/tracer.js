@@ -103,8 +103,21 @@ var LogTracer = function(params) {
     return this;
   }
 
-  this.toMessage = function(opts) {
+  this.toMessage = function(opts, mode) {
     opts = opts || {};
+    if (mode === 'direct') {
+      let tmpl = opts.text || opts.tmpl || opts.template;
+      let text = tmpl && LogFormat(tmpl, __store) || LogConfig.stringify(__store);
+      if (opts.info) {
+        text = text + " - Info: " + LogConfig.stringify(opts.info);
+      }
+      if (opts.tags) {
+        text = text + " - Tags: " + LogConfig.stringify(opts.tags);
+      }
+      opts.reset && this.reset();
+      opts.clear !== false && this.clear();
+      return text;
+    }
     var output = null, logobj, tags, text;
     if (LogConfig.IS_INTERCEPTOR_ENABLED && _interceptors.length > 0) {
       logobj = LogConfig.clone(__store);
