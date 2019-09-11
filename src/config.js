@@ -20,6 +20,9 @@ const store = {
   DEBUGLOG_NAMES: null,
   USE_BASE64_UUID: null,
   TRACKING_DEPTH: null,
+  PREFIX_OF_INFO: null,
+  PREFIX_OF_TAGS: null,
+  IS_FULL_LOG_MODE: null,
   IS_DEBUGLOG_ENABLED: null,
   IS_MOCKLOGGER_ENABLED: null,
   IS_TAGS_EMBEDDABLE: null,
@@ -37,7 +40,7 @@ let isLiveLoad = true;
 
 let doLiveLoad = function(fieldName) {
   if (getEnvOpt('NODE_ENV') !== 'test') isLiveLoad = false;
-  if (store.hasOwnProperty(fieldName))  store[fieldName] = null;
+  if (store.hasOwnProperty(fieldName)) store[fieldName] = null;
 }
 
 let properties = {
@@ -125,6 +128,35 @@ let properties = {
         store.TRACKING_DEPTH = isNaN(depth) ? 2 : depth;
       }
       return store.TRACKING_DEPTH;
+    }
+  },
+  PREFIX_OF_INFO: {
+    get: function() {
+      isLiveLoad && doLiveLoad('PREFIX_OF_INFO');
+      if (!store.PREFIX_OF_INFO) {
+        store.PREFIX_OF_INFO = getEnvOpt('LOGOLITE_PREFIX_OF_INFO') || '-I-';
+        store.PREFIX_OF_INFO = ' ' + store.PREFIX_OF_INFO + ' ';
+      }
+      return store.PREFIX_OF_INFO;
+    }
+  },
+  PREFIX_OF_TAGS: {
+    get: function() {
+      isLiveLoad && doLiveLoad('PREFIX_OF_TAGS');
+      if (!store.PREFIX_OF_TAGS) {
+        store.PREFIX_OF_TAGS = getEnvOpt('LOGOLITE_PREFIX_OF_TAGS') || '-T-';
+        store.PREFIX_OF_TAGS = ' ' + store.PREFIX_OF_TAGS + ' ';
+      }
+      return store.PREFIX_OF_TAGS;
+    }
+  },
+  IS_FULL_LOG_MODE: {
+    get: function() {
+      isLiveLoad && doLiveLoad('IS_FULL_LOG_MODE');
+      if (store.IS_FULL_LOG_MODE === null) {
+        store.IS_FULL_LOG_MODE = getEnvOpt('LOGOLITE_FULL_LOG_MODE') !== 'false';
+      }
+      return store.IS_FULL_LOG_MODE;
     }
   },
   IS_DEBUGLOG_ENABLED: {

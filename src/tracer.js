@@ -105,6 +105,33 @@ function LogTracer (params) {
 
   this.toMessage = function(opts, mode) {
     opts = opts || {};
+    if (LogConfig.IS_FULL_LOG_MODE) {
+      // build the #message part
+      let note = opts.note;
+      if (!note) {
+        const template = opts.text || opts.tmpl || opts.template;
+        if (template) {
+          note = LogFormat(template, __store);
+        }
+        note = note || 'none';
+      }
+      // build the #context part
+      let strInfo = null;
+      if (opts.info) {
+        strInfo = LogConfig.stringify(opts.info);
+      } else {
+        strInfo = LogConfig.stringify(__store);
+      }
+      // build the #tags part
+      let strTags = '[]';
+      if (opts.tags) {
+        strTags = LogConfig.stringify(opts.tags);
+      }
+      // build the output message
+      let output = note + LogConfig.PREFIX_OF_INFO + strInfo + LogConfig.PREFIX_OF_TAGS + strTags;
+      // return / exit
+      return output;
+    }
     if (mode === 'direct') {
       let tmpl = opts.text || opts.tmpl || opts.template;
       let text = tmpl && LogFormat(tmpl, __store) || LogConfig.stringify(__store);
@@ -439,11 +466,5 @@ Object.defineProperties(LogTracer, {
     set: function(val) {}
   }
 });
-
-// @Deprecated
-LogTracer.addStringifyInterceptor = LogTracer.addInterceptor;
-LogTracer.removeStringifyInterceptor = LogTracer.removeInterceptor;
-LogTracer.clearStringifyInterceptors = LogTracer.clearInterceptors;
-LogTracer.stringifyInterceptorCount = LogTracer.countInterceptors;
 
 module.exports = LogTracer;

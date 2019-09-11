@@ -63,9 +63,6 @@ function Logger (kwargs) {
       });
     }
   }
-
-  // @Deprecated
-  this.isEnabledFor = this.has;
 }
 
 let LogAdapter = function() {
