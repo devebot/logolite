@@ -1,7 +1,5 @@
 'use strict';
 
-var _envtool = require('./lib/envtool');
-
 var EnvTool = function(kwargs) {
   kwargs = kwargs || {};
   var _store = {};
@@ -30,8 +28,9 @@ var EnvTool = function(kwargs) {
     return this;
   }
 
-  this.isBrowser = _envtool.isBrowser;
-  this.getEnvOpt = _envtool.getEnvOpt;
+  this.getEnvOpt = function (varName) {
+    return process.env[varName];
+  };
 
   return this.setup(kwargs);
 }

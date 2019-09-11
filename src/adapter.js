@@ -1,62 +1,62 @@
 'use strict';
 
-var debug = require('debug');
-var LogConfig = require('./config');
-var LogTracer = require('./tracer');
-var MockLogger = require('./logmock');
+const debug = require('debug');
+const LogConfig = require('./config');
+const LogTracer = require('./tracer');
+const MockLogger = require('./logmock');
 
-var Logger = function(kwargs) {
+function Logger (kwargs) {
   kwargs = kwargs || {};
-  var self = this;
-  var debugLog = null;
 
-  var createDebugLogger = function() {
+  let debugLog = null;
+
+  let createDebugLogger = function() {
     return debug(kwargs.sector || kwargs.scope || LogConfig.DEFAULT_SECTOR);
   }
 
-  var isDebugLog = function(level) {
+  let isDebugLog = function(level) {
     return kwargs.target === 'conlog' ||
         LogConfig.IS_DEBUGLOG_ENABLED ||
         LogConfig.DEBUGLOG_NAMES.indexOf('all') >= 0 ||
         LogConfig.DEBUGLOG_NAMES.indexOf(level) >= 0;
   }
 
-  self.has = function(level) {
-    var realLevel = kwargs.mappings && kwargs.mappings[level] || level;
+  this.has = function(level) {
+    let realLevel = kwargs.mappings && kwargs.mappings[level] || level;
     if (LogConfig.isAlwaysEnabledFor(realLevel)) return true;
     if (isDebugLog(realLevel)) {
       debugLog = debugLog || createDebugLogger();
       return debugLog.enabled;
     }
-    var rootLogger = kwargs.store.rootLogger;
+    let rootLogger = kwargs.store.rootLogger;
     if (rootLogger && typeof(rootLogger.has) === 'function') {
       return rootLogger.has(realLevel);
     }
     return rootLogger != null && rootLogger[realLevel] !== undefined;
   }
 
-  self.log = function(level) {
-    var realLevel = kwargs.mappings && kwargs.mappings[level] || level;
+  this.log = function(level) {
+    let realLevel = kwargs.mappings && kwargs.mappings[level] || level;
     if (!LogConfig.isAlwaysMutedFor(realLevel)) {
       if (isDebugLog(realLevel)) {
-        var logargs = Array.prototype.slice.call(arguments, 1);
+        let logargs = Array.prototype.slice.call(arguments, 1);
         debugLog = debugLog || createDebugLogger();
         debugLog.apply(null, logargs);
         return;
       }
-      var rootLogger = kwargs.store.rootLogger;
+      let rootLogger = kwargs.store.rootLogger;
       if (rootLogger) {
         if (typeof(rootLogger.log) === 'function') {
           if (realLevel !== level) arguments[0] = realLevel;
           rootLogger.log.apply(rootLogger, arguments);
         } else if (typeof(rootLogger[realLevel]) === 'function') {
-          var logargs = Array.prototype.slice.call(arguments, 1);
+          let logargs = Array.prototype.slice.call(arguments, 1);
           rootLogger[realLevel].apply(rootLogger, logargs);
         }
       }
     }
     if (kwargs.store.interceptors.length > 0) {
-      var realArgs = arguments;
+      let realArgs = arguments;
       if (realLevel !== level) realArgs[0] = realLevel;
       kwargs.store.interceptors.forEach(function(logger) {
         logger.log.apply(logger, realArgs);
@@ -65,12 +65,12 @@ var Logger = function(kwargs) {
   }
 
   // @Deprecated
-  self.isEnabledFor = self.has;
+  this.isEnabledFor = this.has;
 }
 
-var LogAdapter = function() {
-  var store = { rootLogger: null, isInfoSent: false, interceptors: [] };
-  var mockLogger = null;
+let LogAdapter = function() {
+  let store = { rootLogger: null, isInfoSent: false, interceptors: [] };
+  let mockLogger = null;
 
   this.getLogger = function(kwargs) {
     kwargs = kwargs || {};
@@ -90,7 +90,7 @@ var LogAdapter = function() {
   }
 
   this.removeInterceptor = function(logger) {
-    var pos = store.interceptors.indexOf(logger);
+    let pos = store.interceptors.indexOf(logger);
     if (pos >= 0) {
         store.interceptors.splice(pos, 1);
     }
@@ -113,7 +113,7 @@ var LogAdapter = function() {
         level: 'all'
       });
     }
-    var changed = (logger && (logger !== store.rootLogger));
+    let changed = (logger && (logger !== store.rootLogger));
     if (changed) {
       store.rootLogger = logger;
     }
@@ -140,8 +140,7 @@ var LogAdapter = function() {
       } else
       if (field === 'interceptors') {
         store[field].length = 0;
-      }
-      else {
+      } else {
         delete store[field];
       }
     });
@@ -150,7 +149,7 @@ var LogAdapter = function() {
 
   // this.connectTo(null);
 
-  var _isLogger = function(logger) {
+  let _isLogger = function(logger) {
     return logger && (typeof logger.log === 'function');
   }
 }

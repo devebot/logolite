@@ -1,6 +1,6 @@
 'use strict';
 
-var logolite = global.logolite = global.logolite || {};
+const logolite = global.logolite = global.logolite || {};
 
 logolite.LogAdapter = require('./adapter');
 logolite.LogTracer = require('./tracer');

@@ -1,15 +1,15 @@
 'use strict';
 
-var os = require('os');
-var uuidV4 = require('uuid/v4');
-var Buffer = global.Buffer || require('buffer').Buffer;
-var getEnvOpt = require('./envtool').getEnvOpt;
-var dbg = require('debug')('logolite:LogConfig');
-var misc = {}
+const os = require('os');
+const uuidV4 = require('uuid/v4');
+const Buffer = global.Buffer || require('buffer').Buffer;
+const getEnvOpt = require('../envtool').getEnvOpt;
+const dbg = require('debug')('logolite:LogConfig');
+const misc = {}
 
 //====================================================================
 
-var store = {
+const store = {
   DEFAULT_INSTANCE_ID: null,
   DEFAULT_SECTOR: null,
   TAGS_FIELD_NAME: null,
@@ -33,14 +33,14 @@ var store = {
 
 //====================================================================
 
-var isLiveLoad = true;
+let isLiveLoad = true;
 
-var doLiveLoad = function(fieldName) {
+let doLiveLoad = function(fieldName) {
   if (getEnvOpt('NODE_ENV') !== 'test') isLiveLoad = false;
   if (store.hasOwnProperty(fieldName))  store[fieldName] = null;
 }
 
-var properties = {
+let properties = {
   DEFAULT_INSTANCE_ID: {
     get: function() {
       isLiveLoad && doLiveLoad('DEFAULT_INSTANCE_ID');
@@ -121,7 +121,7 @@ var properties = {
     get: function() {
       isLiveLoad && doLiveLoad('TRACKING_DEPTH');
       if (store.TRACKING_DEPTH === null) {
-        var depth = parseInt(getEnvOpt('LOGOLITE_TRACKING_DEPTH'));
+        let depth = parseInt(getEnvOpt('LOGOLITE_TRACKING_DEPTH'));
         store.TRACKING_DEPTH = isNaN(depth) ? 2 : depth;
       }
       return store.TRACKING_DEPTH;
@@ -230,15 +230,15 @@ properties = undefined;
 
 misc.sortLevels = function(levelMap, isInteger) {
   isInteger = isInteger || true;
-  var sortable = [];
-  for(var key in levelMap) {
-    if(levelMap.hasOwnProperty(key)) sortable.push({key:key, value:levelMap[key]});
+  let sortable = [];
+  for (let key in levelMap) {
+    if (levelMap.hasOwnProperty(key)) sortable.push({ key: key, value: levelMap[key] });
   }
-  if(isInteger) {
+  if (isInteger) {
     sortable.sort(function(a, b) { return (a.value - b.value) });
   } else {
     sortable.sort(function(a, b) {
-      var x = a.value.toLowerCase(), y = b.value.toLowerCase();
+      let x = a.value.toLowerCase(), y = b.value.toLowerCase();
       return x<y ? -1 : x>y ? 1 : 0;
     });
   }
@@ -255,7 +255,7 @@ misc.get = function(fieldNames) {
     if (fieldNames.length === 1) {
       return store[fieldNames[0]];
     }
-    var output = {};
+    let output = {};
     Object.keys(store).forEach(function(key) {
       if (fieldNames.indexOf(key) >= 0) {
         output[key] = store[key];
@@ -278,7 +278,7 @@ misc.set = function(args) {
 misc.reset = function(args) {
   args = args || {};
   Object.keys(store).forEach(function(key) {
-    var oldVal = store[key];
+    let oldVal = store[key];
     delete store[key];
     store[key] = args[key] || null;
     dbg.enabled && dbg(' - store[%s]: %s <- %s', key, oldVal, store[key]);
@@ -298,7 +298,7 @@ misc.isAlwaysMutedFor = function(level) {
 
 misc.getLogID = function(opts) {
   if ((opts && opts.uuid) || !misc.USE_BASE64_UUID) return uuidV4();
-  return uuidV4(null, new Buffer(16))
+  return uuidV4(null, Buffer.alloc(16))
       .toString('base64')
       .replace(/\//g, '_')
       .replace(/\+/g, '-')
@@ -315,7 +315,7 @@ misc.clone = function(data) {
 misc.stringify = function(data) {
   if (data === undefined) data = null;
   if (typeof(data) === 'string') return data;
-  var json = null;
+  let json = null;
   if (misc.IS_STRINGIFY_PROTECTED) {
     try {
       json = JSON.stringify(data);
@@ -331,7 +331,7 @@ misc.stringify = function(data) {
 misc.getPackageInfo = function() {
   try {
     if (require.main) {
-      var appRootPath = require('app-root-path');
+      let appRootPath = require('app-root-path');
       return require(appRootPath.resolve('./package.json'));
     }
     return require('./../package.json');
@@ -340,13 +340,13 @@ misc.getPackageInfo = function() {
   }
 }
 
-var libraryInfo = null;
+let libraryInfo = null;
 
 Object.defineProperties(misc, {
   libraryInfo: {
     get: function() {
       if (libraryInfo == null) {
-        var pkgInfo = misc.getPackageInfo();
+        let pkgInfo = misc.getPackageInfo();
         libraryInfo = {
           message: getEnvOpt('LOGOLITE_INFO_MESSAGE') || 'Application Information',
           lib_name: pkgInfo.name,
@@ -366,12 +366,13 @@ module.exports = misc;
 
 //====================================================================
 
-var parseDebuglogLevels = function() {
-  var levels;
-  var consoleLevels = getEnvOpt('LOGOLITE_DEBUGLOG_GREEDY')
-      || getEnvOpt('LOGOLITE_DEBUGLOG_ABSORB')
-      || getEnvOpt('LOGOLITE_DEBUGLOG_NAMES')
-      || getEnvOpt('LOGOLITE_DEBUGLOG_NAME') || 'conlog';
+function parseDebuglogLevels () {
+  let levels;
+  let consoleLevels = getEnvOpt('LOGOLITE_DEBUGLOG_GREEDY') ||
+      getEnvOpt('LOGOLITE_DEBUGLOG_ABSORB') ||
+      getEnvOpt('LOGOLITE_DEBUGLOG_NAMES') ||
+      getEnvOpt('LOGOLITE_DEBUGLOG_NAME') ||
+      'conlog';
   if (consoleLevels === 'null' || consoleLevels === 'none') {
     levels = [];
   } else {
@@ -383,17 +384,9 @@ var parseDebuglogLevels = function() {
   return levels;
 }
 
-var stringToArray = function(labels) {
+function stringToArray (labels) {
   labels = labels || '';
   return labels.split(',').map(function(item) {
     return item.trim();
   });
-}
-
-var isNullOrArray = function(val) {
-  return (val instanceof Array) || (val === null);
-}
-
-var isNullOrString = function(val) {
-  return (typeof(val) === 'string') || (val === null);
 }

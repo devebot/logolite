@@ -1,11 +1,8 @@
 {
   "name": "logolite",
-  "version": "0.1.8",
+  "version": "0.3.0",
   "description": "Lite Virtual Logger and Tracer",
   "main": "index.js",
-  "directories": {
-    "lib": "lib/"
-  },
   "files": [
     "bin/",
     "dist/",
@@ -20,10 +17,11 @@
     "build-client": "gulp build",
     "clean": "rm -rf ./lib",
     "clean-client": "gulp clean",
-    "prepublish": "npm run clean && NODE_ENV=${DEVEBOT_NODE_ENV:-production} npm run build",
-    "pretest": "npm run clean && NODE_ENV=${DEVEBOT_NODE_ENV:-test} npm run build",
+    "prepublish": "npm run clean && cross-env NODE_ENV=${DEVEBOT_NODE_ENV:-production} npm run build",
+    "pretest": "npm run clean && cross-env NODE_ENV=${DEVEBOT_NODE_ENV:-test} npm run build",
     "test": "mocha --recursive ./test/**/*-test.js",
-    "verify": "npm run prepublish && mocha --recursive ./test/**/*-test.js"
+    "verify": "npm run prepublish && mocha --recursive ./test/**/*-test.js",
+    "eslint": "eslint ./src/ --quiet"
   },
   "repository": {
     "type": "git",
@@ -46,17 +44,13 @@
     "babel-plugin-minify-mangle-names": "^0.3.0",
     "babel-preset-env": "^1.6.1",
     "babelify": "^8.0.0",
-    "browserify": "^16.1.1",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^7.0.1",
-    "gulp-browserify": "^0.5.1",
-    "gulp-clean": "^0.4.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-plumber": "^1.2.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^3.0.0",
-    "gulp-webserver": "^0.9.1",
-    "mocha": "^4.1.0",
-    "run-sequence": "^2.2.1"
+    "cross-env": "^5.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "mocha": "^4.1.0"
   }
 }

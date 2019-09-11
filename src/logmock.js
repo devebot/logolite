@@ -1,29 +1,30 @@
 'use strict';
 
-var LogConfig = require('./config');
-var util = require('util');
-var dbg = require('debug')('logolite:logmock');
+const LogConfig = require('./config');
+const util = require('util');
+const dbg = require('debug')('logolite:logmock');
 
-var MockLogger = function(params) {
+function MockLogger (params) {
   params = params || {};
   params.action = params.action || 'cache';
 
-  var self = this;
-  var _logLevelMap = null;
-  var _logLevels = null;
-  var _logPosition = -1;
-  var _cachedMessages = [];
+  const self = this;
+
+  let _logLevelMap = null;
+  let _logLevels = null;
+  let _logPosition = -1;
+  let _cachedMessages = [];
 
   this.log = function(level) {
     if (_isEnabledFor(level)) {
-      switch(params.action) {
+      switch (params.action) {
         case 'cache': {
           _cachedMessages.push(arguments);
           break;
         }
         case 'print': {
-          var args = Array.prototype.slice.call(arguments, 1);
-          var str = util.format.apply(util, args);
+          let args = Array.prototype.slice.call(arguments, 1);
+          let str = util.format.apply(util, args);
           console.log(new Date().toISOString() + ' [' + level + '] ' + str);
           break;
         }
@@ -64,7 +65,7 @@ var MockLogger = function(params) {
       _logPosition = _logLevels.length - 1;
     }
 
-    var level = opts.level || opts.logLevel;
+    let level = opts.level || opts.logLevel;
     if (level && _logLevels.indexOf(level) >= 0) {
       _logPosition = _logLevels.indexOf(level);
     }
@@ -83,15 +84,15 @@ var MockLogger = function(params) {
   }
 
   this._reset = function() {
-    var store = this._probe();
+    let store = this._probe();
     _cachedMessages.length = 0;
     return store;
   }
 
-  var _isEnabledFor = function(level) {
-    var p = _logLevels.indexOf(level);
+  let _isEnabledFor = function(level) {
+    let p = _logLevels.indexOf(level);
     dbg.enabled && dbg('_isEnabledFor: %s/%s/%s', level, p, _logPosition);
-    return (0 <= p) && (p <= _logPosition);
+    return (p >= 0) && (p <= _logPosition);
   }
 
   Object.defineProperty(this, 'messages', {

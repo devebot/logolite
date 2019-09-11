@@ -1,25 +1,25 @@
 'use strict';
 
-var LogConfig = require('./config');
-var LogFormat = require('./format');
+const LogConfig = require('./config');
+const LogFormat = require('./format');
 
-var DEFAULT_PARENT_ID_NAME = '_parentId_';
-var DEFAULT_NODE_ID_NAME = '_nodeId_';
-var DEFAULT_NODE_TYPE_NAME = '_nodeType_';
+const DEFAULT_PARENT_ID_NAME = '_parentId_';
+const DEFAULT_NODE_ID_NAME = '_nodeId_';
+const DEFAULT_NODE_TYPE_NAME = '_nodeType_';
 
-var LogTracer = function(params) {
+function LogTracer (params) {
   params = params || {
     key: 'instanceId',
     value: LogConfig.DEFAULT_INSTANCE_ID
   };
 
-  var __parent = params.parent;
-  var __key = params.key;
-  var __value = params.value;
-  var __store = {};
-  var __frozen = [];
-  var __depth = LogConfig.TRACKING_DEPTH;
-  var __predefined = LogConfig.IS_TRACING_ID_PREDEFINED;
+  let __parent = params.parent;
+  let __key = params.key;
+  let __value = params.value;
+  let __store = {};
+  let __frozen = [];
+  let __depth = LogConfig.TRACKING_DEPTH;
+  let __predefined = LogConfig.IS_TRACING_ID_PREDEFINED;
 
   Object.defineProperties(this, {
     'parent': {
@@ -37,7 +37,7 @@ var LogTracer = function(params) {
   });
 
   this.clear = function() {
-    var __storeKeys = Object.keys(__store);
+    let __storeKeys = Object.keys(__store);
     if (__storeKeys.length > __frozen.length) {
       __storeKeys.forEach(function(fieldName) {
         if (__frozen.indexOf(fieldName) < 0) delete __store[fieldName];
@@ -61,8 +61,8 @@ var LogTracer = function(params) {
           __store[self.parent.key] = self.parent.value;
         }
       } else if (__depth > 1) {
-        var ref = self.parent;
-        while(ref) {
+        let ref = self.parent;
+        while (ref) {
           __store[ref.key] = ref.value;
           ref = ref.parent;
         }
@@ -118,7 +118,7 @@ var LogTracer = function(params) {
       opts.clear !== false && this.clear();
       return text;
     }
-    var output = null, logobj, tags, text;
+    let output = null, logobj, tags, text;
     if (LogConfig.IS_INTERCEPTOR_ENABLED && _interceptors.length > 0) {
       logobj = LogConfig.clone(__store);
     }
@@ -126,7 +126,7 @@ var LogTracer = function(params) {
       tags = (opts.tags instanceof Array) && LogConfig.clone(opts.tags);
     }
     if (LogConfig.IS_TEXT_EMBEDDABLE || LogConfig.IS_TEMPLATE_APPLIED) {
-      var tmpl = opts.text || opts.tmpl || opts.template;
+      let tmpl = opts.text || opts.tmpl || opts.template;
       text = tmpl && LogFormat(tmpl, __store);
     }
     if (LogConfig.IS_TAGS_EMBEDDABLE && tags) {
@@ -170,7 +170,7 @@ var LogTracer = function(params) {
     return this.stringify(opts);
   }
 
-  var __clearMap = function(map) {
+  let __clearMap = function(map) {
     Object.keys(map).forEach(function(key) {
       delete map[key];
     });
@@ -187,7 +187,7 @@ var LogTracer = function(params) {
   this.reset();
 }
 
-var _interceptors = [];
+let _interceptors = [];
 
 Object.defineProperties(LogTracer, {
   getLogID: {
@@ -213,7 +213,7 @@ Object.defineProperties(LogTracer, {
   removeInterceptor: {
     get: function() {
       return function(f) {
-        var pos = _interceptors.indexOf(f);
+        let pos = _interceptors.indexOf(f);
         if (pos >= 0) {
           _interceptors.splice(pos, 1);
           return true;
@@ -244,7 +244,7 @@ Object.defineProperties(LogTracer, {
     get: function() {
       return function(accumulator, mappings, logobj, tags) {
         if (isInvalidHelper(accumulator, mappings, logobj)) return;
-        for(var i=0; i<mappings.length; i++) {
+        for (let i=0; i<mappings.length; i++) {
           if (!mappings[i].matchingPath) {
             if (typeof mappings[i].matchingField === 'string') {
               mappings[i].matchingPath = mappings[i].matchingField.split(',')
@@ -256,12 +256,12 @@ Object.defineProperties(LogTracer, {
               mappings[i].matchingPath = mappings[i].matchingField;
             }
           }
-          var pickedFields = mappings[i].selectedFields;
-          var counterField = mappings[i].countTo || mappings[i].counterField;
-          var storageField = mappings[i].storeTo || mappings[i].storageField;
-          var p1 = matchField(mappings[i].matchingRule, mappings[i].matchingPath, logobj);
-          var p2 = matchTags(mappings[i].anyTags, mappings[i].allTags, tags);
-          var p3 = matchFilter(mappings[i].filter, logobj, tags);
+          let pickedFields = mappings[i].selectedFields;
+          let counterField = mappings[i].countTo || mappings[i].counterField;
+          let storageField = mappings[i].storeTo || mappings[i].storageField;
+          let p1 = matchField(mappings[i].matchingRule, mappings[i].matchingPath, logobj);
+          let p2 = matchTags(mappings[i].anyTags, mappings[i].allTags, tags);
+          let p3 = matchFilter(mappings[i].filter, logobj, tags);
           if (checkConditionals(p1, p2, p3)) {
             if (counterField) {
               accumulator[counterField] = (accumulator[counterField] || 0) + 1;
@@ -272,7 +272,7 @@ Object.defineProperties(LogTracer, {
                 if (!(pickedFields instanceof Array)) {
                   pickedFields = [pickedFields];
                 }
-                var output = {};
+                let output = {};
                 pickedFields.forEach(function(field) {
                   output[field] = logobj[field];
                 });
@@ -291,7 +291,7 @@ Object.defineProperties(LogTracer, {
     get: function() {
       return function(descriptors) {
         LogTracer.clearInterceptors();
-        if (!descriptors instanceof Array) {
+        if (!(descriptors instanceof Array)) {
           throw new Error('descriptors is not an array');
         }
         descriptors.forEach(function(descriptor, index) {
@@ -304,7 +304,7 @@ Object.defineProperties(LogTracer, {
           if (!(descriptor.mappings instanceof Array)) {
             throw new Error('descriptors['+ index + '].mappings is not an array');
           }
-          var appender = LogTracer.accumulationAppender.bind(null,
+          let appender = LogTracer.accumulationAppender.bind(null,
             descriptor.accumulator, descriptor.mappings);
           LogTracer.addInterceptor(appender);
         });
@@ -314,9 +314,9 @@ Object.defineProperties(LogTracer, {
   }
 });
 
-var checkConditionals = function() {
-  var ok = false;
-  for(var i =0; i<arguments.length; i++) {
+let checkConditionals = function() {
+  let ok = false;
+  for (let i =0; i<arguments.length; i++) {
     if (arguments[i] === true) {
       ok = true;
     } else if (arguments[i] === false) {
@@ -327,16 +327,16 @@ var checkConditionals = function() {
   return ok;
 }
 
-var isInvalidHelper = function(counter, mappings, logobj) {
+let isInvalidHelper = function(counter, mappings, logobj) {
   if (!counter || !(typeof counter === 'object')) return true;
   if (!mappings || !(mappings instanceof Array)) return true;
   if (!logobj || !(typeof logobj === 'object')) return true;
   return false;
 }
 
-var hasAnyTags = function(tags, anyTags) {
+let hasAnyTags = function(tags, anyTags) {
   if (!(tags instanceof Array)) return false;
-  for(var i=0; i<anyTags.length; i++) {
+  for (let i=0; i<anyTags.length; i++) {
     if (typeof anyTags[i] === 'string') {
       if (tags.indexOf(anyTags[i]) >= 0) return true;
     } else
@@ -347,9 +347,9 @@ var hasAnyTags = function(tags, anyTags) {
   return false;
 }
 
-var hasAllTags = function(tags, allTags) {
+let hasAllTags = function(tags, allTags) {
   if (!(tags instanceof Array)) return false;
-  for(var i=0; i<allTags.length; i++) {
+  for (let i=0; i<allTags.length; i++) {
     if (typeof allTags[i] === 'string') {
       if (tags.indexOf(allTags[i]) < 0) return false;
     } else
@@ -362,9 +362,9 @@ var hasAllTags = function(tags, allTags) {
   return true;
 }
 
-var matchTags = function(anyTags, allTags, tags) {
+let matchTags = function(anyTags, allTags, tags) {
   if (typeof(tags) === 'string') tags = [tags];
-  var passed = null;
+  let passed = null;
   if (passed !== false && anyTags) {
     if (typeof(anyTags) === 'string') anyTags = [anyTags];
     if (anyTags instanceof Array) {
@@ -380,11 +380,11 @@ var matchTags = function(anyTags, allTags, tags) {
   return passed;
 }
 
-var matchField = function(matchingRule, fieldPath, object) {
-  var passed = null;
+let matchField = function(matchingRule, fieldPath, object) {
+  let passed = null;
   if (!(object && typeof(object) === 'object' && fieldPath instanceof Array)) return passed;
-  var fieldValue = object;
-  for(var i=0; i<fieldPath.length; i++) {
+  let fieldValue = object;
+  for (let i=0; i<fieldPath.length; i++) {
     fieldValue = fieldValue && fieldValue[fieldPath[i]];
   }
   if (matchingRule instanceof RegExp) {
@@ -394,7 +394,7 @@ var matchField = function(matchingRule, fieldPath, object) {
     passed = (matchingRule.indexOf(fieldValue) >= 0);
   } else
   if (matchingRule instanceof Function) {
-    passed = (matchingRule.call(null, fieldValue) == true);
+    passed = (matchingRule(fieldValue) == true);
   } else
   if (typeof matchingRule === 'string') {
     passed = (fieldValue == matchingRule);
@@ -402,15 +402,15 @@ var matchField = function(matchingRule, fieldPath, object) {
   return passed;
 }
 
-var matchFilter = function(filter, packet, tags) {
-  var passed = null;
+let matchFilter = function(filter, packet, tags) {
+  let passed = null;
   if (filter instanceof Function) {
-    passed = (filter.call(null, packet, tags) == true);
+    passed = (filter(packet, tags) == true);
   }
   return passed;
 }
 
-var ROOT = null;
+let ROOT = null;
 
 Object.defineProperties(LogTracer, {
   ROOT: {
