@@ -362,13 +362,10 @@ misc.stringify = function(data) {
 
 misc.getPackageInfo = function() {
   try {
-    if (require.main) {
-      let appRootPath = require('app-root-path');
-      return require(appRootPath.resolve('./package.json'));
-    }
-    return require('./../package.json');
+    let appRootPath = require('app-root-path');
+    return require(appRootPath.resolve('./package.json'));
   } catch (err) {
-    return {};
+    return require('./../package.json');
   }
 }
 
