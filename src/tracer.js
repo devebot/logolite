@@ -146,7 +146,7 @@ function LogTracer (params) {
       return text;
     }
     let output = null, logobj, tags, text;
-    if (LogConfig.IS_INTERCEPTOR_ENABLED && _interceptors.length > 0) {
+    if (LogConfig.IS_INTERCEPTOR_ENABLED && BOX.interceptors.length > 0) {
       logobj = LogConfig.clone(__store);
     }
     if (LogConfig.IS_TAGS_EMBEDDABLE || LogConfig.IS_INTERCEPTOR_ENABLED) {
@@ -171,14 +171,14 @@ function LogTracer (params) {
     } else {
       output = LogConfig.clone(__store);
     }
-    if (LogConfig.IS_INTERCEPTOR_ENABLED && _interceptors.length > 0) {
+    if (LogConfig.IS_INTERCEPTOR_ENABLED && BOX.interceptors.length > 0) {
       if (LogConfig.IS_TAGS_EMBEDDABLE && tags) {
         logobj[LogConfig.TAGS_FIELD_NAME]= tags;
       }
       if (LogConfig.IS_TEXT_EMBEDDABLE && text) {
         logobj[LogConfig.TEXT_FIELD_NAME]= text;
       }
-      _interceptors.forEach(function(interceptor) {
+      BOX.interceptors.forEach(function(interceptor) {
         interceptor(logobj, tags, __key, __value, __parent);
       });
     }
@@ -197,13 +197,6 @@ function LogTracer (params) {
     return this.stringify(opts);
   }
 
-  let __clearMap = function(map) {
-    Object.keys(map).forEach(function(key) {
-      delete map[key];
-    });
-    return map;
-  }
-
   Object.defineProperties(this, {
     getLogID: {
       get: function() { return LogConfig.getLogID },
@@ -214,7 +207,38 @@ function LogTracer (params) {
   this.reset();
 }
 
-let _interceptors = [];
+const BOX = {
+  ROOT: null,
+  interceptors: [],
+}
+
+Object.defineProperties(LogTracer, {
+  ROOT: {
+    get: function() { return BOX.ROOT = BOX.ROOT || new LogTracer() },
+    set: function(val) {}
+  },
+  reset: {
+    get: function() {
+      return function() { BOX.ROOT = null; return LogTracer; }
+    },
+    set: function(val) {}
+  },
+  empty: {
+    get: function() {
+      return function() {
+        Array.prototype.forEach.call(arguments, function(target) {
+          if (target && typeof target === 'object') {
+            Object.keys(target).forEach(function(fieldName) {
+              delete target[fieldName];
+            });
+          }
+        });
+        return LogTracer;
+      }
+    },
+    set: function(val) {}
+  }
+});
 
 Object.defineProperties(LogTracer, {
   getLogID: {
@@ -228,8 +252,8 @@ Object.defineProperties(LogTracer, {
   addInterceptor: {
     get: function() {
       return function(f) {
-        if (typeof(f) === 'function' && _interceptors.indexOf(f) < 0) {
-          _interceptors.push(f);
+        if (typeof(f) === 'function' && BOX.interceptors.indexOf(f) < 0) {
+          BOX.interceptors.push(f);
           return true;
         }
         return false;
@@ -240,9 +264,9 @@ Object.defineProperties(LogTracer, {
   removeInterceptor: {
     get: function() {
       return function(f) {
-        let pos = _interceptors.indexOf(f);
+        let pos = BOX.interceptors.indexOf(f);
         if (pos >= 0) {
-          _interceptors.splice(pos, 1);
+          BOX.interceptors.splice(pos, 1);
           return true;
         }
         return false;
@@ -253,7 +277,7 @@ Object.defineProperties(LogTracer, {
   clearInterceptors: {
     get: function() {
       return function() {
-        _interceptors.length = 0;
+        BOX.interceptors.length = 0;
         return true;
       }
     },
@@ -262,7 +286,7 @@ Object.defineProperties(LogTracer, {
   countInterceptors: {
     get: function() {
       return function() {
-        return _interceptors.length;
+        return BOX.interceptors.length;
       }
     },
     set: function(value) {}
@@ -341,7 +365,14 @@ Object.defineProperties(LogTracer, {
   }
 });
 
-let checkConditionals = function() {
+function __clearMap (map) {
+  Object.keys(map).forEach(function(key) {
+    delete map[key];
+  });
+  return map;
+}
+
+function checkConditionals () {
   let ok = false;
   for (let i =0; i<arguments.length; i++) {
     if (arguments[i] === true) {
@@ -354,14 +385,14 @@ let checkConditionals = function() {
   return ok;
 }
 
-let isInvalidHelper = function(counter, mappings, logobj) {
+function isInvalidHelper (counter, mappings, logobj) {
   if (!counter || !(typeof counter === 'object')) return true;
   if (!mappings || !(mappings instanceof Array)) return true;
   if (!logobj || !(typeof logobj === 'object')) return true;
   return false;
 }
 
-let hasAnyTags = function(tags, anyTags) {
+function hasAnyTags (tags, anyTags) {
   if (!(tags instanceof Array)) return false;
   for (let i=0; i<anyTags.length; i++) {
     if (typeof anyTags[i] === 'string') {
@@ -374,7 +405,7 @@ let hasAnyTags = function(tags, anyTags) {
   return false;
 }
 
-let hasAllTags = function(tags, allTags) {
+function hasAllTags (tags, allTags) {
   if (!(tags instanceof Array)) return false;
   for (let i=0; i<allTags.length; i++) {
     if (typeof allTags[i] === 'string') {
@@ -389,7 +420,7 @@ let hasAllTags = function(tags, allTags) {
   return true;
 }
 
-let matchTags = function(anyTags, allTags, tags) {
+function matchTags (anyTags, allTags, tags) {
   if (typeof(tags) === 'string') tags = [tags];
   let passed = null;
   if (passed !== false && anyTags) {
@@ -407,7 +438,7 @@ let matchTags = function(anyTags, allTags, tags) {
   return passed;
 }
 
-let matchField = function(matchingRule, fieldPath, object) {
+function matchField (matchingRule, fieldPath, object) {
   let passed = null;
   if (!(object && typeof(object) === 'object' && fieldPath instanceof Array)) return passed;
   let fieldValue = object;
@@ -429,42 +460,12 @@ let matchField = function(matchingRule, fieldPath, object) {
   return passed;
 }
 
-let matchFilter = function(filter, packet, tags) {
+function matchFilter (filter, packet, tags) {
   let passed = null;
   if (filter instanceof Function) {
     passed = (filter(packet, tags) == true);
   }
   return passed;
 }
-
-let ROOT = null;
-
-Object.defineProperties(LogTracer, {
-  ROOT: {
-    get: function() { return ROOT = ROOT || new LogTracer() },
-    set: function(val) {}
-  },
-  reset: {
-    get: function() {
-      return function() { ROOT = null; return LogTracer; }
-    },
-    set: function(val) {}
-  },
-  empty: {
-    get: function() {
-      return function() {
-        Array.prototype.forEach.call(arguments, function(target) {
-          if (target && typeof target === 'object') {
-            Object.keys(target).forEach(function(fieldName) {
-              delete target[fieldName];
-            });
-          }
-        });
-        return LogTracer;
-      }
-    },
-    set: function(val) {}
-  }
-});
 
 module.exports = LogTracer;
