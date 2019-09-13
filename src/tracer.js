@@ -122,13 +122,18 @@ function LogTracer (params) {
       } else {
         strInfo = LogConfig.stringify(__store);
       }
+      // build the #extraInfo part
+      let extraInfo = '{}';
       // build the #tags part
       let strTags = '[]';
       if (opts.tags) {
         strTags = LogConfig.stringify(opts.tags);
       }
       // build the output message
-      let output = note + LogConfig.PREFIX_OF_INFO + strInfo + LogConfig.PREFIX_OF_TAGS + strTags;
+      let output = note +
+          LogConfig.PREFIX_OF_INFO + strInfo +
+          LogConfig.PREFIX_OF_EXTRA + extraInfo +
+          LogConfig.PREFIX_OF_TAGS + strTags;
       // return / exit
       return output;
     }
